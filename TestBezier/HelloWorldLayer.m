@@ -53,7 +53,6 @@
       playerLayer = [CCLayer node];
       [self addChild:playerLayer z:1];
       
-      // Create sprite and add it to the layer
       qb = [CCSprite spriteWithFile:@"Player2.png"];
       qb.position = ccp(160, 20);
       [self addChild:qb];
