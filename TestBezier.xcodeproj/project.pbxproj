@@ -133,6 +133,9 @@
 		42DFD51016B0F09700D0BBAB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DFD50F16B0F09700D0BBAB /* AppDelegate.m */; };
 		42DFD51316B0F09700D0BBAB /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DFD51216B0F09700D0BBAB /* HelloWorldLayer.m */; };
 		42DFD51616B0F09700D0BBAB /* IntroLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DFD51516B0F09700D0BBAB /* IntroLayer.m */; };
+		42DFD51E16B0F0C300D0BBAB /* Player2-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD51C16B0F0C300D0BBAB /* Player2-hd.png */; };
+		42DFD51F16B0F0C300D0BBAB /* Player2.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD51D16B0F0C300D0BBAB /* Player2.png */; };
+		42DFD52916B1199D00D0BBAB /* Streak.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD52816B1199D00D0BBAB /* Streak.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -398,6 +401,9 @@
 		42DFD51216B0F09700D0BBAB /* HelloWorldLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloWorldLayer.m; sourceTree = "<group>"; };
 		42DFD51416B0F09700D0BBAB /* IntroLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntroLayer.h; sourceTree = "<group>"; };
 		42DFD51516B0F09700D0BBAB /* IntroLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IntroLayer.m; sourceTree = "<group>"; };
+		42DFD51C16B0F0C300D0BBAB /* Player2-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Player2-hd.png"; sourceTree = "<group>"; };
+		42DFD51D16B0F0C300D0BBAB /* Player2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Player2.png; sourceTree = "<group>"; };
+		42DFD52816B1199D00D0BBAB /* Streak.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Streak.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -472,6 +478,9 @@
 		42DFD39716B0F09400D0BBAB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				42DFD52816B1199D00D0BBAB /* Streak.png */,
+				42DFD51C16B0F0C300D0BBAB /* Player2-hd.png */,
+				42DFD51D16B0F0C300D0BBAB /* Player2.png */,
 				42DFD39816B0F09400D0BBAB /* Default.png */,
 				42DFD39A16B0F09400D0BBAB /* Default-Landscape~ipad.png */,
 				42DFD39C16B0F09400D0BBAB /* fps_images.png */,
@@ -895,6 +904,9 @@
 				42DFD3AD16B0F09400D0BBAB /* Icon@2x.png in Resources */,
 				42DFD3B016B0F09400D0BBAB /* iTunesArtwork in Resources */,
 				42DFD4EE16B0F09600D0BBAB /* ChangeLog in Resources */,
+				42DFD51E16B0F0C300D0BBAB /* Player2-hd.png in Resources */,
+				42DFD51F16B0F0C300D0BBAB /* Player2.png in Resources */,
+				42DFD52916B1199D00D0BBAB /* Streak.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1059,6 +1071,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1070,6 +1083,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1078,6 +1092,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = TestBezier/Prefix.pch;
@@ -1088,6 +1103,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1112,6 +1128,7 @@
 				42DFD51B16B0F09700D0BBAB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

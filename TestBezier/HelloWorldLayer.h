@@ -15,6 +15,28 @@
 // HelloWorldLayer
 @interface HelloWorldLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
 {
+   CCLayer *ballLayer;
+   CCLayer *playerLayer;
+   
+   BOOL bezierLTR;
+   BOOL swipeStarted;
+   BOOL pastDistance;
+   
+   int timeSwiped;
+   int sentTime;
+   
+   CCSprite *qb;
+   CCSprite *player1;
+   CCSprite *player2;
+   
+   NSMutableArray *ballArray;
+   NSMutableArray *removeArray;
+   NSMutableArray *playerArray;
+   NSMutableArray *streakArray;
+   CGPoint playerTouchPoint;
+   CGPoint touchLocation;
+   float velo;
+   float dist;
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
