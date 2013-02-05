@@ -33,7 +33,6 @@
 	// return the scene
 	return scene;
 }
-
 // on "init" you need to initialize your instance
 -(id) init
 {
@@ -46,6 +45,9 @@
       removeArray = [[NSMutableArray alloc] init];
       playerArray = [[NSMutableArray alloc] init];
       streakArray = [[NSMutableArray alloc] init];
+      bezierArray = [[NSMutableArray alloc] init];
+      
+      pointArray = [[NSMutableArray alloc] init];
       
       ballLayer = [CCLayer node];
       [self addChild:ballLayer z:1];
@@ -62,22 +64,23 @@
       player1.tag = 1;
       [playerLayer addChild:player1];
       [playerArray addObject:player1];
-
+      
       player2 = [CCSprite spriteWithFile:@"Player2.png"];
       player2.position = ccp(300, 0);
       player2.tag = 2;
       [playerLayer addChild:player2];
       [playerArray addObject:player2];
-
+      
       [self playerStreak1];
       [self playerStreak2];
       
       swipeStarted = NO;
       pastDistance = NO;
+      touchStartedAtPlayer = NO;
       timeSwiped = 0;
       bezierLTR = YES;
       //[self performBezierMovement];
- 
+      
       for (int i = 0; i < [playerArray count]; i ++){
          CCSprite *player = (CCSprite*)[playerArray objectAtIndex:i];
          CCMotionStreak *playerStreak = [CCMotionStreak streakWithFade:0.8 minSeg:1 width:16 color:ccWHITE textureFilename:@"Streak.png"];
@@ -117,7 +120,7 @@
 }
 -(void)performBezierMovement{
    id callback = [CCCallFunc actionWithTarget:self selector:@selector(bezierFinished:)];
-   NSMutableArray *bezierArray = [NSMutableArray array];
+   NSMutableArray *bezierArray1 = [NSMutableArray array];
    // Add Beziers
    // Bezier 0
    ccBezierConfig bzConfig_0;
@@ -128,17 +131,17 @@
       bzConfig_0.controlPoint_2 = ccp(265, 172);
       bzConfig_0.endPosition = ccp(268, 463);
       CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:4 bezier:bzConfig_0];
-      [bezierArray addObject:bezierTo_0];
+      [bezierArray1 addObject:bezierTo_0];
    }
    else {
       bzConfig_0.controlPoint_1 = ccp(265, 172);
       bzConfig_0.controlPoint_2 = ccp(80, 315);
       bzConfig_0.endPosition = ccp(0, 0);
       CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:4 bezier:bzConfig_0];
-      [bezierArray addObject:bezierTo_0];
+      [bezierArray1 addObject:bezierTo_0];
    }
    // create actionsequence and run action
-   CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray];
+   CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
    [player1 runAction: [CCSequence actions:bezierSeq, callback, nil]];
 }
 -(void)bezierFinished:(id)sender
@@ -161,7 +164,7 @@
    velo = dist/100;
    
    for (CCSprite *ball in ballLayer.children){
-      ball.position = ccpAdd(ball.position, ccp((touchLocation.x - qb.position.x) * velo /sentTime, (touchLocation.y - qb.position.y) * velo/sentTime));
+      ball.position = ccpAdd(ball.position, ccp(([[pointArray objectAtIndex:[pointArray count]-1] CGPointValue].x - qb.position.x) * velo /sentTime, ([[pointArray objectAtIndex:[pointArray count]-1] CGPointValue].y - qb.position.y) * velo/sentTime));
       for (CCSprite *player in playerLayer.children){
          if (CGRectIntersectsRect(player.boundingBox, ball.boundingBox)){
             [removeArray addObject:ball];
@@ -188,57 +191,115 @@
    
 }
 
--(void)throwBallWithTime:(int)time{
+-(void)throwBallWithTime:(int)time andPosition: (CGPoint )location{
    CCSprite *ball1 = [CCSprite spriteWithFile:@"Player2.png"];
    ball1.position = qb.position;
    [ballLayer addChild:ball1];
    [ballArray addObject:ball1];
+   tlCopy = location;
    sentTime = time;
    timeSwiped = 0;
    NSLog(@"called: %i", time);
 }
-
+-(void)calculateFarthestPoint:(NSArray *)array{
+   CGPoint firstPoint = [[array objectAtIndex:0] CGPointValue];
+   CGPoint lastPoint = [[array objectAtIndex:[array count] -1] CGPointValue];
+   
+   float slope = (lastPoint.y - firstPoint.y) / (lastPoint.x - firstPoint.x);
+   
+   
+   float distHolder = 0;
+   NSMutableArray *holdingArray = [[NSMutableArray alloc] init];
+   for (int i = 0; i < [array count]; i ++){
+      float x = [[array objectAtIndex:i] CGPointValue].x;
+      float y = [[array objectAtIndex:i] CGPointValue].y;
+      
+      float posX = ((slope * ((x/slope) + y + (lastPoint.x * slope) - lastPoint.y))/(pow(slope, 2) + 1));
+      float posY = slope * (posX - lastPoint.x) + lastPoint.y;
+      
+      float posDist = ccpDistance(ccp(posX, posY), [[array objectAtIndex:i] CGPointValue]);
+      NSLog(@"pos: (%f, %f) ----> %f", posX, posY, posDist);
+      
+      if (posDist > distHolder){
+         distHolder = posDist;
+         [holdingArray removeAllObjects];
+         [holdingArray addObject:[NSValue valueWithCGPoint:CGPointMake(posX, posY)]];
+         //control point 1
+         [bezierArray addObject:[NSValue valueWithCGPoint:CGPointMake(x,y)]];
+      }
+   }
+   
+   //calculate control point 2
+   
+   
+   
+   NSLog(@"Longest: %@", holdingArray);
+   
+}
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
    
    if (swipeStarted && !pastDistance){
       for (UITouch *touch in touches) {
-         touchLocation = [touch locationInView: [touch view]];
-         touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
-         
-         dist = sqrtf(pow((touchLocation.x - qb.position.x), 2) + pow((touchLocation.y - qb.position.y), 2));
-         NSLog(@"Distance:%f", dist);
-         velo = ([[CCDirector sharedDirector] winSize].height)/dist;
-         [self throwBallWithTime: timeSwiped];
-         
+         if (touchStartedAtPlayer){
+            
+            touchLocation = [touch locationInView: [touch view]];
+            touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
+            
+            dist = sqrtf(pow((touchLocation.x - qb.position.x), 2) + pow((touchLocation.y - qb.position.y), 2));
+            dist = ccpDistance(touchLocation, qb.position);
+            
+            NSLog(@"Distance:%f", dist);
+            velo = ([[CCDirector sharedDirector] winSize].height)/dist;
+            [self throwBallWithTime: timeSwiped andPosition:touchLocation];
+            
+         }
+         swipeStarted = NO;
+         timeSwiped = 0;
       }
-      swipeStarted = NO;
-      timeSwiped = 0;
    }
+   
+   
    pastDistance = NO;
+   touchStartedAtPlayer = NO;
 }
 -(void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
    swipeStarted = YES;
-   
-   
-}
-- (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-   
-   
+   [pointArray removeAllObjects];
+   [bezierArray removeAllObjects];
    for (UITouch *touch in touches) {
       touchLocation = [touch locationInView: [touch view]];
       touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
-      playerTouchPoint = touchLocation;
-      dist = sqrtf(pow((touchLocation.x - qb.position.x), 2) + pow((touchLocation.y - qb.position.y), 2));
-      velo = ([[CCDirector sharedDirector] winSize].height)/dist;
       
-      if (dist >= 180 && [ballArray count] < 1){
-         [self throwBallWithTime: timeSwiped];
-         pastDistance = YES;
-         swipeStarted = NO;
-         
+      if (CGRectContainsPoint(qb.boundingBox, touchLocation )){
+         touchStartedAtPlayer = YES;
       }
-      NSLog(@"Distance:%f", dist);
-      
+   }
+}
+- (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+   
+   for (UITouch *touch in touches) {
+      if (touchStartedAtPlayer){
+         touchLocation = [touch locationInView: [touch view]];
+         touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
+         playerTouchPoint = touchLocation;
+         dist = sqrtf(pow((touchLocation.x - qb.position.x), 2) + pow((touchLocation.y - qb.position.y), 2));
+         dist = ccpDistance(touchLocation, qb.position);
+         velo = ([[CCDirector sharedDirector] winSize].height)/dist;
+         if (dist <=180){
+            [pointArray addObject:[NSValue valueWithCGPoint:touchLocation]];
+         }
+         if (dist >= 180 && [ballArray count] < 1){
+            [self throwBallWithTime: timeSwiped andPosition:touchLocation];
+            pastDistance = YES;
+            swipeStarted = NO;
+            touchStartedAtPlayer = NO;
+            
+            NSLog(@"Final touch location: %@", NSStringFromCGPoint(touchLocation));
+            [self calculateFarthestPoint:pointArray];
+            NSLog(@"Point array: %@", pointArray);
+            
+         }
+      }
    }
 }
 
@@ -252,7 +313,29 @@
    ccDrawLine(qb.position, ccp(qb.position.x + 160, qb.position.y + 82));
    ccDrawLine(qb.position, ccp(qb.position.x - 160, qb.position.y + 82));
    
+   
+   if ([pointArray count] > 2){
+      for (int i = 0; i < [pointArray count]-2; i ++){
+         ccDrawLine([[pointArray objectAtIndex:i] CGPointValue], [[pointArray objectAtIndex:i+1] CGPointValue]);
+         
+      }
+      ccDrawLine(qb.position, [[pointArray objectAtIndex:[pointArray count]-1] CGPointValue]);
+      
+   }
+   
    ccDrawCircle(qb.position, 180, 100, 100, NO);
+   
+   [self calculateBezierFromEndpoint: endPosition];
+   endPosition = ccp(300, 480);
+   controlPoint1 = ccp(300, 170);
+   //controlPoint2 = ccp(120, 30);
+   
+   if ([bezierArray count] >= 1){
+      ccDrawCubicBezier(qb.position, [[bezierArray objectAtIndex:0] CGPointValue], controlPoint1, endPosition,100);
+   }
+   
+}
+-(void) calculateBezierFromEndpoint:(CGPoint )endpt{
    
 }
 // on "dealloc" you need to release all your retained objects

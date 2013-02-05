@@ -21,7 +21,7 @@
    BOOL bezierLTR;
    BOOL swipeStarted;
    BOOL pastDistance;
-   
+   BOOL touchStartedAtPlayer;
    int timeSwiped;
    int sentTime;
    
@@ -35,8 +35,16 @@
    NSMutableArray *streakArray;
    CGPoint playerTouchPoint;
    CGPoint touchLocation;
+   CGPoint tlCopy;
    float velo;
    float dist;
+   
+   CGPoint controlPoint1;
+   CGPoint controlPoint2;
+   CGPoint endPosition;
+   
+   NSMutableArray *pointArray;
+   NSMutableArray *bezierArray;
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
