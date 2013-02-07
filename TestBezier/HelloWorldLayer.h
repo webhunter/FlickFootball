@@ -42,6 +42,8 @@
    CGPoint controlPoint1;
    CGPoint controlPoint2;
    CGPoint endPosition;
+   CGPoint newPoint;
+   CGPoint midPoint;
    
    NSMutableArray *pointArray;
    NSMutableArray *bezierArray;
