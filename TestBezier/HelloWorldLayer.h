@@ -17,7 +17,7 @@
 {
    CCLayer *ballLayer;
    CCLayer *playerLayer;
-   
+   CCLayer *fieldTileLayer;
    BOOL bezierLTR;
    BOOL swipeStarted;
    BOOL pastDistance;
@@ -33,6 +33,7 @@
    NSMutableArray *removeArray;
    NSMutableArray *playerArray;
    NSMutableArray *streakArray;
+   NSMutableArray *fieldTileArray;
    CGPoint playerTouchPoint;
    CGPoint touchLocation;
    CGPoint tlCopy;

@@ -45,9 +45,18 @@
       removeArray = [[NSMutableArray alloc] init];
       playerArray = [[NSMutableArray alloc] init];
       streakArray = [[NSMutableArray alloc] init];
+      fieldTileArray = [[NSMutableArray alloc] init];
+
       bezierArray = [[NSMutableArray alloc] init];
-      
       pointArray = [[NSMutableArray alloc] init];
+      
+      CCSprite *bg = [CCSprite spriteWithFile:@"FbField.png"];
+      bg.position = ccp(160, 240);
+      //[self addChild:bg z:-500];
+
+      
+      fieldTileLayer = [CCLayer node];
+      [self addChild:fieldTileLayer z:0];
       
       ballLayer = [CCLayer node];
       [self addChild:ballLayer z:1];
@@ -55,9 +64,37 @@
       playerLayer = [CCLayer node];
       [self addChild:playerLayer z:1];
       
+
+      
+      
+      
+      
+      NSString *tileName;
+      //place tiles on screen
+      for (int i = 0; i < 14; i ++){
+         int randInt = arc4random()%4 + 1;
+         
+         //if even
+         if (i%2 == 0){
+            tileName = [NSString stringWithFormat:@"Green1%i.png", randInt];
+         }
+         //else odd
+         else{
+            tileName = [NSString stringWithFormat:@"Green2%i.png", randInt];
+            
+         }
+         NSLog(@"Tile names: %@", tileName);
+         
+         CCSprite *tile = [CCSprite spriteWithFile:tileName];
+         tile.position = ccp(160, 22 + 44*i);
+         tile.tag = 100 + i;
+         [fieldTileLayer addChild:tile];
+         [fieldTileArray addObject:tile];
+      }
+      
       qb = [CCSprite spriteWithFile:@"Player2.png"];
       qb.position = ccp(160, 20);
-      [self addChild:qb];
+      [self addChild:qb z:50];
       
       player1 = [CCSprite spriteWithFile:@"Player2.png"];
       player1.position = ccp(0, 0);
@@ -79,7 +116,6 @@
       touchStartedAtPlayer = NO;
       timeSwiped = 0;
       bezierLTR = YES;
-      //[self performBezierMovement];
       
       for (int i = 0; i < [playerArray count]; i ++){
          CCSprite *player = (CCSprite*)[playerArray objectAtIndex:i];
@@ -103,7 +139,30 @@
    [player1 runAction:[CCSequence actions:straight, streak, callback, nil]];
 }
 -(void)streakFinished1:(id)sender{
-   [self playerStreak1];
+   //[self playerStreak1];
+   //create path to new random point
+   
+   
+   int randX = arc4random()%320;
+   int randY = arc4random()%300 + 100;
+   CGPoint randPoint = CGPointMake(randX, randY);
+   
+   //make sure the new point is at least 150 pixels away from current position
+   while (ccpDistance(player1.position, randPoint) < 150){
+      int randX = arc4random()%320;
+      int randY = arc4random()%300 + 100;
+      randPoint = CGPointMake(randX, randY);
+   }
+   //calc dist to new point
+   float newDist = ccpDistance(player1.position, randPoint);
+   //find time to new point
+   float time = newDist/480*5;
+   id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished1:)];
+   //minimun delay time is .5 seconds, max is 1.5 seconds
+   float delayTime = ((arc4random()%100) + 50) / 100;
+   id delay = [CCDelayTime actionWithDuration:delayTime];
+   id moveTo = [CCMoveTo actionWithDuration:time position:randPoint];
+   [player1 runAction:[CCSequence actions:delay, moveTo, callback, nil]];
    
 }
 -(void) playerStreak2{
@@ -113,10 +172,30 @@
    id straight = [CCMoveBy actionWithDuration:4.0f position:ccp(0, 300)];
    id streak = [CCMoveBy actionWithDuration:3.0f position:ccp(-250, 120)];
    [player2 runAction:[CCSequence actions:straight, streak, callback, nil]];
+   
 }
 -(void)streakFinished2:(id)sender{
-   [self playerStreak2];
+   //create path to new random point
+   int randX = arc4random()%320;
+   int randY = arc4random()%300 + 100;
+   CGPoint randPoint = CGPointMake(randX, randY);
    
+   //make sure the new point is at least 150 pixels away from current position
+   while (ccpDistance(player2.position, randPoint) < 150){
+      int randX = arc4random()%320;
+      int randY = arc4random()%300 + 100;
+      randPoint = CGPointMake(randX, randY);
+   }
+   //calc dist to new point
+   float newDist = ccpDistance(player2.position, randPoint);
+   //find time to new point
+   float time = newDist/480*5;
+   id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished2:)];
+   //minimun delay time is .5 seconds, max is 1.5 seconds
+   float delayTime = ((arc4random()%100) + 50) / 100;
+   id delay = [CCDelayTime actionWithDuration:delayTime];
+   id moveTo = [CCMoveTo actionWithDuration:time position:randPoint];
+   [player2 runAction:[CCSequence actions:delay, moveTo, callback, nil]];
 }
 -(void)performBezierMovement{
    id callback = [CCCallFunc actionWithTarget:self selector:@selector(bezierFinished:)];
@@ -144,15 +223,69 @@
    CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
    [player1 runAction: [CCSequence actions:bezierSeq, callback, nil]];
 }
--(void)bezierFinished:(id)sender
-{
-	// Reverse
-	bezierLTR = !bezierLTR;
-	
-	// Perform the movement
-	[self performBezierMovement];
-}
 
+-(void) movePlayersBack{
+   for (int i = 0; i < [playerArray count]; i ++){
+      [[playerArray objectAtIndex:i] stopAllActions];
+      [[playerArray objectAtIndex:i] runAction:[CCMoveTo actionWithDuration:1.5f position:ccp(0 + 300*i, 0)]];
+      
+      
+      /*
+       NSMutableArray *bezierArray1 = [NSMutableArray array];
+       // Add Beziers
+       // Bezier 0
+       ccBezierConfig bzConfig_0;
+       
+       //calculate the control point 2
+       
+       
+       bzConfig_0.controlPoint_1 = [[playerArray objectAtIndex:i] position];
+       bzConfig_0.controlPoint_2 = newPoint;
+       bzConfig_0.endPosition = ccp(0 + 300*i, 0);
+       CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:2.5f bezier:bzConfig_0];
+       [bezierArray1 addObject:bezierTo_0];
+       
+       // create actionsequence and run action
+       CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
+       [[playerArray objectAtIndex:i] runAction: [CCSequence actions:[CCEaseBackOut actionWithAction:bezierSeq], nil]];
+       */
+   }
+
+}
+-(void) newPlay{
+   //start next play
+   [self playerStreak1];
+   [self playerStreak2];
+}
+-(void) playOverWithDelay:(float) delay withDistance: (float) ballDist{
+   //move players back after delay
+   [self performSelector:@selector(movePlayersBack) withObject:nil afterDelay:delay];
+   
+   
+   for (CCSprite *tile in fieldTileLayer.children){
+      [tile runAction:[CCMoveBy actionWithDuration:1.5f position:ccp(0, -ballDist)]];
+   
+   }
+   
+   [self performSelector:@selector(newPlay) withObject:nil afterDelay:2.0f];
+   
+
+}
+-(NSString *)tileImageName:(CCSprite *)tile{
+   NSString *returnString;
+   int randInt = arc4random()%4 + 1;
+   int tag = tile.tag;
+   //if even
+   if (tag%2 == 0){
+      returnString = [NSString stringWithFormat:@"Green1%i.png", randInt];
+   }
+   //else odd
+   else{
+      returnString = [NSString stringWithFormat:@"Green2%i.png", randInt];
+      
+   }
+   return returnString;
+}
 - (void)tick:(ccTime) dt {
    
    for (int i = 0; i < [playerArray count]; i ++){
@@ -169,6 +302,12 @@
          if (CGRectIntersectsRect(player.boundingBox, ball.boundingBox)){
             [removeArray addObject:ball];
             [ballArray removeObject:ball];
+            
+            //play is over
+            //ball is caught
+            float playDist = ball.position.y - qb.position.y;
+            
+            [self playOverWithDelay:0.1f withDistance: playDist];
          }
       }
    }
@@ -177,9 +316,20 @@
       if (ball.position.y >= 480 || ball.position.x <= 0 || ball.position.x >= 300){
          [removeArray addObject:ball];
          [ballArray removeObject:ball];
+         
+         //play is over
+         //ball out of bounds
+         [self playOverWithDelay:0.75f withDistance: 0];
       }
    }
    
+   for (CCSprite *tile in fieldTileLayer.children){
+      if (tile.position.y <= -50){
+         tile.position = ccp(160, tile.position.y + 616);
+         tile = [CCSprite spriteWithFile:[self tileImageName: tile]];
+      }
+      
+   }
    for (int i = 0; i < [removeArray count]; i++) {
       [ballLayer removeChild:(CCSprite *)[removeArray objectAtIndex:i] cleanup:YES];
    }
@@ -210,7 +360,7 @@
    bzConfig_0.controlPoint_1 = qb.position;
    bzConfig_0.controlPoint_2 = newPoint;
    bzConfig_0.endPosition = endPosition;
-   CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:5.0f bezier:bzConfig_0];
+   CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:2.5f bezier:bzConfig_0];
    [bezierArray1 addObject:bezierTo_0];
    
    // create actionsequence and run action
@@ -391,7 +541,7 @@
    
    ccDrawLine(qb.position, midPoint);
    ccDrawLine(qb.position, newPoint);
-
+   
 }
 -(void) calculateBezierFromEndpoint:(CGPoint )endpt{
    
