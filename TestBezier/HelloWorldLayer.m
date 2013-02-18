@@ -54,11 +54,11 @@
       
       player1Book = [[NSMutableArray alloc] init];
       player2Book = [[NSMutableArray alloc] init];
-
+      
       
       player1Movements = [[NSMutableArray alloc] init];
       player2Movements = [[NSMutableArray alloc] init];
-
+      
       
       CCSprite *bg = [CCSprite spriteWithFile:@"FbField.png"];
       bg.position = ccp(160, 240);
@@ -100,7 +100,7 @@
       
       [self readPlaybookWithPlay:1];
       player1startPos = [[player1Book objectAtIndex:0] CGPointValue];
-
+      
       qb = [CCSprite spriteWithFile:@"Player2.png"];
       qb.position = ccp(160, 20);
       [self addChild:qb z:50];
@@ -124,7 +124,7 @@
       [startingPos addObject:[NSValue valueWithCGPoint:player2startPos]];
       
       
-
+      
       
       [self playerStreak1];
       [self playerStreak2];
@@ -135,6 +135,9 @@
       timeSwiped = 0;
       player1BottomtoTop = YES;
       player2BottomtoTop = YES;
+      
+      player1Moving = YES;
+      player2Moving = YES;
       
       tan = CGPointMake(160, 240);
       
@@ -161,7 +164,7 @@
    //coordinates for first player
    NSArray *firstPlay = [playArray objectAtIndex:0];
    NSArray *secondPlay = [playArray objectAtIndex:1];
-
+   
    int yCoord;
    int xCoord;
    
@@ -172,7 +175,7 @@
       
       CGPoint point = CGPointMake(xCoord, yCoord);
       [player1Book addObject:[NSValue valueWithCGPoint:point]];
-
+      
    }
    
    for (int i = 0; i < [secondPlay count]; i++){
@@ -182,23 +185,24 @@
       
       CGPoint point = CGPointMake(xCoord, yCoord);
       [player2Book addObject:[NSValue valueWithCGPoint:point]];
-
+      
    }
    NSLog(@"Play Array: %@", playArray);
    NSLog(@"First Play: %@", firstPlay);
    NSLog(@"Coordinates1: %@", player1Book);
    NSLog(@"Coordinates2: %@", player2Book);
-
+   
 }
 -(void) playerStreak1{
+   player1Moving = YES;
    id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished1:)];
-
+   
    NSMutableArray *playArray = [[NSMutableArray alloc] init];
    for (int i = 1; i < [player1Book count]; i++){
       CGPoint point = [[player1Book objectAtIndex:i] CGPointValue];
       float pointDist = ccpDistance([[player1Book objectAtIndex:i-1] CGPointValue], point);
       float time = pointDist/480*5;
-
+      
       CCAction *moveTo = [CCMoveTo actionWithDuration:time position:point];
       [playArray addObject:moveTo];
    }
@@ -207,6 +211,7 @@
    
 }
 -(void) playerStreak2{
+   player2Moving = YES;
    player2.position = ccp(300, 0);
    id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished2:)];
    
@@ -215,7 +220,11 @@
    [player2 runAction:[CCSequence actions:straight, streak, callback, nil]];
    
 }
+-(void) player1Moving:(id)sender{
+   player1Moving = YES;
+}
 -(void)streakFinished1:(id)sender{
+   player1Moving = NO;
    //create path to new random point
    int randX = arc4random()%320;
    int randY = arc4random()%300 + 100;
@@ -245,21 +254,25 @@
    
    newP1 = randPoint;
    newP2 = player1.position;
-   NSLog(@"Player 1 slope: %f", player1Slope);
+   
    //calc dist to new point
    float newDist = ccpDistance(player1.position, randPoint);
    //find time to new point
    float time = newDist/480*5;
+   id playerMoving = [CCCallFunc actionWithTarget:self selector:@selector(player1Moving:)];
    id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished1:)];
    //minimun delay time is .5 seconds, max is 1.5 seconds
-   float delayTime = ((arc4random()%100) + 50) / 100;
+   float delayTime = ((arc4random()%100) + 100) / 100;
    id delay = [CCDelayTime actionWithDuration:delayTime];
    id moveTo = [CCMoveTo actionWithDuration:time position:randPoint];
-   [player1 runAction:[CCSequence actions:delay, moveTo, callback, nil]];
+   [player1 runAction:[CCSequence actions:delay, playerMoving, moveTo, callback, nil]];
    
 }
-
+-(void) player2Moving:(id)sender{
+   player2Moving = YES;
+}
 -(void)streakFinished2:(id)sender{
+   player2Moving = NO;
    //create path to new random point
    int randX = arc4random()%320;
    int randY = arc4random()%300 + 100;
@@ -289,24 +302,26 @@
    }
    newP12 = randPoint;
    newP22 = player2.position;
-   NSLog(@"Player 2 slope: %f", player2Slope);
-
+   
    //calc dist to new point
    float newDist = ccpDistance(player2.position, randPoint);
    //find time to new point
    float time = newDist/480*5;
+   id playerMoving = [CCCallFunc actionWithTarget:self selector:@selector(player2Moving:)];
    id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished2:)];
    //minimun delay time is .5 seconds, max is 1.5 seconds
-   float delayTime = ((arc4random()%100) + 50) / 100;
+   float delayTime = ((arc4random()%100) + 100) / 100;
    id delay = [CCDelayTime actionWithDuration:delayTime];
    id moveTo = [CCMoveTo actionWithDuration:time position:randPoint];
-   [player2 runAction:[CCSequence actions:delay, moveTo, callback, nil]];
+   [player2 runAction:[CCSequence actions:delay, playerMoving, moveTo, callback, nil]];
 }
 
 -(void) movePlayer1Back{
    
    [player1 stopAllActions];
    
+   
+   if (player1Moving){
    NSMutableArray *bezierArray1 = [NSMutableArray array];
    // Add Beziers
    // Bezier 0
@@ -405,12 +420,19 @@
    
    CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
    [player1 runAction: [CCSequence actions:bezierSeq, callback, nil]];
-   
+   }
+   else if (!player1Moving){
+      id moveBack = [CCMoveTo actionWithDuration:3.5 position:player1startPos];
+      id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished1:)];
+
+      [player1 runAction:[CCSequence actions:moveBack, callback, nil]];
+   }
 }
 -(void) movePlayer2Back{
    
    [player2 stopAllActions];
    
+   if (player2Moving){
    NSMutableArray *bezierArray1 = [NSMutableArray array];
    // Add Beziers
    // Bezier 0
@@ -419,7 +441,7 @@
    //calculate slope from points
    CGPoint lastPoint = player2.position;
    float player2MovementSlope = (player2.position.y - player2Hold.y) / (player2.position.x - player2Hold.x);
-
+   
    if (player2.position.y < player2Hold.y){
       player2BottomtoTop = NO;
    }
@@ -439,7 +461,7 @@
    }
    
    BOOL infSlope = NO;
-
+   
    if (player2MovementSlope == player2MovementSlope + 20){
       infSlope = YES;
    }
@@ -516,7 +538,13 @@
    // create actionsequence and run action
    CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
    [player2 runAction: [CCSequence actions:bezierSeq, callback, nil]];
-   
+   }
+   else if (!player2Moving){
+      id moveBack = [CCMoveTo actionWithDuration:3.5 position:player2startPos];
+      id callback = [CCCallFunc actionWithTarget:self selector:@selector(streakFinished2:)];
+      
+      [player2 runAction:[CCSequence actions:moveBack, callback, nil]];
+   }
 }
 -(void) newPlay{
    //start next play
@@ -528,6 +556,8 @@
    [self performSelector:@selector(movePlayer1Back) withObject:nil afterDelay:delay];
    [self performSelector:@selector(movePlayer2Back) withObject:nil afterDelay:delay];
    
+   NSLog(@"Is the player moving: %d", player1Moving);
+
    
    for (CCSprite *tile in fieldTileLayer.children){
       [tile runAction:[CCMoveBy actionWithDuration:1.5f position:ccp(0, -ballDist)]];
@@ -780,7 +810,7 @@
     
     }
     */
-
+   
    //ccDrawColor4F(200.0f, 100.0f, 100.0f, 255.0f);
    
    //draws straight line
@@ -806,7 +836,7 @@
    ccDrawLine(player1Control, p4);
    ccDrawLine(newP1, newP2);
    ccDrawLine(newP12, newP22);
-
+   
    for (int i = 1; i < [player1Book count]; i ++){
       ccDrawLine([[player1Book objectAtIndex:i-1] CGPointValue], [[player1Book objectAtIndex:i] CGPointValue]);
    }

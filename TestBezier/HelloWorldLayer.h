@@ -74,6 +74,8 @@
    BOOL player1LefttoRight;
    BOOL player2LefttoRight;
    
+   BOOL player1Moving;
+   BOOL player2Moving;
    NSMutableArray *player1Book;
    NSMutableArray *player2Book;
    
