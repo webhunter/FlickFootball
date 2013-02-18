@@ -22,7 +22,6 @@
    BOOL swipeStarted;
    BOOL pastDistance;
    BOOL touchStartedAtPlayer;
-   BOOL playIsLive;
    int timeSwiped;
    int sentTime;
    
@@ -60,20 +59,42 @@
    NSMutableArray *pointArray;
    NSMutableArray *bezierArray;
    NSMutableArray *startingPos;
-   NSMutableArray *player1movements;
-   NSMutableArray *player2movements;
 
+   CGPoint player1Control;
+   CGPoint player2Control;
    
+   float player1Slope;
+   float player2Slope;
+   
+   CGPoint player1Hold;
+   CGPoint player2Hold;
+   
+   BOOL player1BottomtoTop;
+   BOOL player2BottomtoTop;
+   BOOL player1LefttoRight;
+   BOOL player2LefttoRight;
+   
+   NSMutableArray *player1Book;
+   NSMutableArray *player2Book;
+   
+   
+   NSMutableArray *player1Movements;
+   NSMutableArray *player2Movements;
    CGPoint p1;
    CGPoint p2;
    CGPoint p3;
    CGPoint p4;
-
-   CGPoint player1Control;
-   CGPoint player1hold;
    
-   CGPoint player2Control;
-   CGPoint player2hold;
+   CGPoint p12;
+   CGPoint p22;
+   CGPoint p32;
+   CGPoint p42;
+   
+   CGPoint newP1;
+   CGPoint newP2;
+
+   CGPoint newP12;
+   CGPoint newP22;
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child

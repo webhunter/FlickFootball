@@ -159,6 +159,7 @@
 		42DFD51E16B0F0C300D0BBAB /* Player2-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD51C16B0F0C300D0BBAB /* Player2-hd.png */; };
 		42DFD51F16B0F0C300D0BBAB /* Player2.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD51D16B0F0C300D0BBAB /* Player2.png */; };
 		42DFD52916B1199D00D0BBAB /* Streak.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD52816B1199D00D0BBAB /* Streak.png */; };
+		42FBDB5416CF648300B4692E /* PlayBook.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42FBDB5316CF648300B4692E /* PlayBook.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -450,6 +451,7 @@
 		42DFD51C16B0F0C300D0BBAB /* Player2-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Player2-hd.png"; sourceTree = "<group>"; };
 		42DFD51D16B0F0C300D0BBAB /* Player2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Player2.png; sourceTree = "<group>"; };
 		42DFD52816B1199D00D0BBAB /* Streak.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Streak.png; sourceTree = "<group>"; };
+		42FBDB5316CF648300B4692E /* PlayBook.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PlayBook.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -551,6 +553,7 @@
 		42DFD39716B0F09400D0BBAB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				42FBDB5316CF648300B4692E /* PlayBook.plist */,
 				42A3CC3D16C83CDE00410506 /* FieldTiles */,
 				42DFD51D16B0F0C300D0BBAB /* Player2.png */,
 				42A3CC3416C8318600410506 /* FbField.png */,
@@ -1007,6 +1010,7 @@
 				42A3CC6516C83CE600410506 /* Green25.png in Resources */,
 				42A3CC6816C83EB900410506 /* Green12-hd.png in Resources */,
 				42A3CC6916C83EB900410506 /* Green12.png in Resources */,
+				42FBDB5416CF648300B4692E /* PlayBook.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
