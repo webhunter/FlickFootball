@@ -52,7 +52,7 @@
    CGPoint tan;
    CGPoint tanSect;
    CGPoint startTouch;
-   
+   CGPoint firstTouch;
    CGPoint player1startPos;
    CGPoint player2startPos;
    
@@ -73,9 +73,10 @@
    BOOL player2BottomtoTop;
    BOOL player1LefttoRight;
    BOOL player2LefttoRight;
-   
+   BOOL showRoutes;
    BOOL player1Moving;
    BOOL player2Moving;
+   BOOL playStarted;
    NSMutableArray *player1Book;
    NSMutableArray *player2Book;
    
