@@ -17,5 +17,33 @@
 			<string>30x200</string>
 		</array>
 	</array>
+	<key>Play 2</key>
+	<array>
+		<array>
+			<string>20x20</string>
+			<string>20x100</string>
+			<string>240x200</string>
+			<string>240x100</string>
+		</array>
+		<array>
+			<string>300x20</string>
+			<string>280x200</string>
+			<string>160x400</string>
+		</array>
+	</array>
+	<key>Play 3</key>
+	<array>
+		<array>
+			<string>20x20</string>
+			<string>20x400</string>
+			<string>240x200</string>
+			<string>300x100</string>
+		</array>
+		<array>
+			<string>300x20</string>
+			<string>300x200</string>
+			<string>60x400</string>
+		</array>
+	</array>
 </dict>
 </plist>

@@ -12,6 +12,10 @@
 // When you import this file, you import all the cocos2d classes
 #import "cocos2d.h"
 
+CGPoint endPosition;
+
+
+
 // HelloWorldLayer
 @interface HelloWorldLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
 {
@@ -42,7 +46,6 @@
    
    CGPoint controlPoint1;
    CGPoint controlPoint2;
-   CGPoint endPosition;
    CGPoint newPoint;
    CGPoint midPoint;
    
@@ -98,6 +101,9 @@
 
    CGPoint newP12;
    CGPoint newP22;
+   
+   bool menuTouch;
+   CCSprite *menu;
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
