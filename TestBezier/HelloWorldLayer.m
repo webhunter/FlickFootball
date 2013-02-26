@@ -666,7 +666,8 @@
       if (ball.position.y >= 480 || ball.position.x <= 0 || ball.position.x >= 300){
          [removeArray addObject:ball];
          [ballArray removeObject:ball];
-         
+         [[[CCDirector sharedDirector] scheduler]setTimeScale:2.0];
+
          //play is over
          //ball out of bounds
          player1Hold = player1.position;
@@ -786,6 +787,7 @@
    ball1.position = qb.position;
    [ballLayer addChild:ball1];
    
+   [[[CCDirector sharedDirector] scheduler]setTimeScale:.5];
    //calculate time for action based on time taken to swipe
    float actionTime = timeSwiped * 15 / dist;
    if (actionTime < 0.5){
