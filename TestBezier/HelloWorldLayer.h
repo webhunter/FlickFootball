@@ -103,7 +103,12 @@ CGPoint endPosition;
    CGPoint newP22;
    
    bool menuTouch;
-   CCSprite *menu;
+   CCSprite *playMaker;
+   CCSprite *playBg;
+   CCSprite *playBg1;
+   CCLayer *menuLayer;
+   bool menuShowing;
+
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child

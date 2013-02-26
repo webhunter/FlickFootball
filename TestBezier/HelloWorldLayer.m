@@ -76,6 +76,8 @@
       playerLayer = [CCLayer node];
       [self addChild:playerLayer z:1];
       
+      menuLayer = [CCLayer node];
+      [self addChild:menuLayer z:4];
       
       NSString *tileName;
       //place tiles on screen
@@ -96,7 +98,7 @@
          CCSprite *tile = [CCSprite spriteWithFile:tileName];
          tile.position = ccp(160, 22 + 44*i);
          tile.tag = 100 + i;
-         //[fieldTileLayer addChild:tile z:0];
+         [fieldTileLayer addChild:tile z:0];
          [fieldTileArray addObject:tile];
       }
       
@@ -104,11 +106,6 @@
       qb = [CCSprite spriteWithFile:@"Player2.png"];
       qb.position = ccp(160, 20);
       [self addChild:qb z:50];
-      
-      menu = [CCSprite spriteWithFile:@"Player2.png"];
-      menu.position = ccp(160, 150);
-      [self addChild:menu z:50];
-      menuTouch = NO;
       
       player1 = [WideReceivers spriteWithFile:@"Player2.png"];
       player1.position = player1startPos;
@@ -140,6 +137,8 @@
       showRoutes = NO;
       playStarted = NO;
       tan = CGPointMake(160, 240);
+      menuShowing = YES;
+      menuTouch = NO;
       
       for (int i = 0; i < [playerArray count]; i ++){
          CCSprite *player = (CCSprite*)[playerArray objectAtIndex:i];
@@ -149,25 +148,43 @@
          [streakArray addObject:playerStreak];
       }
       
+      CCSprite *topPiece = [CCSprite spriteWithFile:@"TopPiece.png"];
+      topPiece.position = ccp(160, 480 - topPiece.boundingBox.size.height/2);
+      [self addChild:topPiece z:10];
       
-		NSMutableArray* allItems = [NSMutableArray arrayWithCapacity:30];
+      playBg = [CCSprite spriteWithFile:@"Backboard.png"];
+      playBg.position = ccp(160, 367);
+      
+      playBg1 = [CCSprite spriteWithFile:@"Backboard2.png"];
+      playBg1.position = ccp(160, 367);
+      
+      playMaker = [CCSprite spriteWithFile:@"DownMarker.png"];
+      playMaker.position = ccp(160, 281);
+      
+      [menuLayer addChild:playBg z:3];
+      [menuLayer addChild:playBg1 z:2];
+      [menuLayer addChild:playMaker z:4];
+      
+		NSMutableArray* allItems = [NSMutableArray arrayWithCapacity:3];
       float offset;
-		for (int i = 0; i < 30; ++i)
+		for (int i = 0; i < 3; ++i)
 		{
 			// create a menu item for each character
-			NSString* image = [NSString stringWithFormat:@"box"];
+			NSString* image = [NSString stringWithFormat:@"Play%i", i+1];
 			NSString* normalImage = [NSString stringWithFormat:@"%@.png", image];
 			NSString* selectedImage = [NSString stringWithFormat:@"%@.png", image];
 			
 			CCSprite* normalSprite = [CCSprite spriteWithFile:normalImage];
 			CCSprite* selectedSprite = [CCSprite spriteWithFile:selectedImage];
          CCMenuItemSprite* item =[CCMenuItemSprite itemWithNormalSprite:normalSprite selectedSprite:selectedSprite target:self selector:@selector(LaunchLevel:)];
-
+         
 			[allItems addObject:item];
          offset = normalSprite.boundingBox.size.width/2;
 		}
-      SlidingMenu* menuGrid = [SlidingMenu menuWithArray:allItems cols:3 rows:1 position:CGPointMake(offset + 5, 300) padding:CGPointMake(5 + 2*offset, 0)];
-		[self addChild:menuGrid];
+      SlidingMenu* menuGrid = [SlidingMenu menuWithArray:allItems cols:3 rows:1 position:CGPointMake(offset + 5, playBg.position.y) padding:CGPointMake(5 + 2*offset, 0)];
+      [menuLayer addChild:menuGrid z:2];
+      
+      
       
       [self schedule:@selector(tick:)];
       
@@ -179,7 +196,7 @@
    NSLog(@"Sender: %i", [sender tag]);
    [self readPlaybookWithPlay:[sender tag]];
    player1startPos = [[player1Book objectAtIndex:0] CGPointValue];
-
+   
 	// Do Something
 }
 #pragma mark Playbook
@@ -239,7 +256,7 @@
    }
    [playArray addObject:callback];
    [player1 runAction:[CCSequence actionWithArray:playArray]];
-
+   
 }
 -(void) playerStreak2{
    player2Moving = YES;
@@ -598,11 +615,8 @@
    [self performSelector:@selector(movePlayer1Back) withObject:nil afterDelay:delay];
    [self performSelector:@selector(movePlayer2Back) withObject:nil afterDelay:delay];
    
-   NSLog(@"Is the player moving: %d", player1Moving);
-   
    [self performSelector:@selector(restartPlay) withObject:nil afterDelay:delay + 3.5];
-   NSLog(@"The dist: %f", ballDist);
-
+   
    for (CCSprite *tile in fieldTileLayer.children){
       [tile runAction:[CCMoveBy actionWithDuration:3.5f position:ccp(0, -ballDist)]];
    }
@@ -642,9 +656,7 @@
             player1Hold = player1.position;
             player2Hold = player2.position;
             
-            
             float playDist = ball.position.y - qb.position.y;
-            NSLog(@"The dist: %f", playDist);
             [self playOverWithDelay:0.1f withDistance: playDist];
          }
       }
@@ -765,11 +777,11 @@
    
 }
 -(void)throwBallWithTime:(int)time{
-  /*
-   CCSprite *ball1 = [CCSprite spriteWithFile:@"Player2.png"];
-   ball1.position = qb.position;
-   [ballLayer addChild:ball1];
-   */
+   /*
+    CCSprite *ball1 = [CCSprite spriteWithFile:@"Player2.png"];
+    ball1.position = qb.position;
+    [ballLayer addChild:ball1];
+    */
    Ball *ball1 = [Ball spriteWithFile:@"Player2.png"];
    ball1.position = qb.position;
    [ballLayer addChild:ball1];
@@ -822,17 +834,27 @@
          CGPoint oldTouchLocation = [touch previousLocationInView:touch.view];
          oldTouchLocation = [[CCDirector sharedDirector] convertToGL:oldTouchLocation];
          oldTouchLocation = [self convertToNodeSpace:oldTouchLocation];
-         
-         CGPoint translation = ccpSub(touchLocation, oldTouchLocation);
-
-         menu.position = ccpAdd(menu.position, ccp(0, translation.y));
+         int flip;
+         if (menuShowing){
+            flip = 1;
+            menuShowing = NO;
+         }
+         else if (!menuShowing){
+            flip = -1;
+            menuShowing = YES;
+         }
+         for (CCSprite *tile in menuLayer.children){
+            //move the play menu up or down 
+            [tile runAction:[CCMoveBy actionWithDuration:.2f position:ccp(0, flip*157)]];
+         }
+         menuTouch = NO;
       }
    }
 }
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
    showRoutes = NO;
-      for (UITouch *touch in touches) {
-         if (touchStartedAtPlayer){
+   for (UITouch *touch in touches) {
+      if (touchStartedAtPlayer){
          touchLocation = [touch locationInView: [touch view]];
          touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
          
@@ -845,9 +867,10 @@
             [self throwBallWithTime: timeSwiped];
          }
       }
-
+      
       touchStartedAtPlayer = NO;
       swipeStarted = NO;
+      menuTouch = NO;
    }
 }
 -(void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -866,13 +889,12 @@
          swipeStarted = YES;
       }
       else if (CGRectContainsPoint(qb.boundingBox, touchLocation) && !playStarted){
-         NSLog(@"Start");
          playStarted = YES;
          //start the play
          [self playerStreak1];
          [self playerStreak2];
       }
-      else if (CGRectContainsPoint(menu.boundingBox, touchLocation) && !playStarted){
+      else if (CGRectContainsPoint(playMaker.boundingBox, touchLocation)){
          menuTouch = YES;
       }
    }
