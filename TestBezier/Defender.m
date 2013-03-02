@@ -1,15 +1,14 @@
 //
-//  Ball.m
+//  Defender.m
 //  TestBezier
 //
-//  Created by KirbyGee on 2/21/13.
+//  Created by KirbyGee on 3/1/13.
 //
 //
 
-#import "Ball.h"
-#import "HelloWorldLayer.h"
-@implementation Ball
+#import "Defender.h"
 
+@implementation Defender
 -(id) initWithFile:(NSString *)filename {
 	if ((self = [super initWithFile:filename])) {
       

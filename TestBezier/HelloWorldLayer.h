@@ -8,13 +8,10 @@
 
 
 #import <GameKit/GameKit.h>
-
+#import "WideReceivers.h"
 // When you import this file, you import all the cocos2d classes
 #import "cocos2d.h"
-
-CGPoint endPosition;
-
-
+#import "Defender.h"
 
 // HelloWorldLayer
 @interface HelloWorldLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
@@ -22,6 +19,7 @@ CGPoint endPosition;
    CCLayer *ballLayer;
    CCLayer *playerLayer;
    CCLayer *fieldTileLayer;
+   CCLayer *defenderLayer;
    BOOL bezierLTR;
    BOOL swipeStarted;
    BOOL pastDistance;
@@ -30,9 +28,9 @@ CGPoint endPosition;
    int sentTime;
    
    CCSprite *qb;
-   CCSprite *player1;
-   CCSprite *player2;
-   
+   WideReceivers *player1;
+   WideReceivers *player2;
+   Defender *defender;
    NSMutableArray *ballArray;
    NSMutableArray *removeArray;
    NSMutableArray *playerArray;
@@ -43,7 +41,8 @@ CGPoint endPosition;
    CGPoint tlCopy;
    float velo;
    float dist;
-   
+   CGPoint endPosition;
+
    CGPoint controlPoint1;
    CGPoint controlPoint2;
    CGPoint newPoint;
@@ -108,6 +107,7 @@ CGPoint endPosition;
    CCSprite *playBg1;
    CCLayer *menuLayer;
    bool menuShowing;
+   bool menuAdjust;
 
 }
 

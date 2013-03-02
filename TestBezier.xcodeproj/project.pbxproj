@@ -26,6 +26,7 @@
 		427CF33716DC39CD00A6B65B /* Backboard-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF33516DC39CD00A6B65B /* Backboard-hd.png */; };
 		427CF33A16DC3A0200A6B65B /* Backboard2.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF33816DC3A0200A6B65B /* Backboard2.png */; };
 		427CF33B16DC3A0200A6B65B /* Backboard2-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF33916DC3A0200A6B65B /* Backboard2-hd.png */; };
+		427CF34616E1840C00A6B65B /* Defender.m in Sources */ = {isa = PBXBuildFile; fileRef = 427CF34516E1840C00A6B65B /* Defender.m */; };
 		42A3CC3716C8318600410506 /* FbField.png in Resources */ = {isa = PBXBuildFile; fileRef = 42A3CC3416C8318600410506 /* FbField.png */; };
 		42A3CC3916C8318600410506 /* YellowArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 42A3CC3616C8318600410506 /* YellowArrow.png */; };
 		42A3CC3C16C833BD00410506 /* FbField-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 42A3CC3B16C833BD00410506 /* FbField-hd.png */; };
@@ -178,7 +179,6 @@
 		42DFD50D16B0F09600D0BBAB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DFD50C16B0F09600D0BBAB /* main.m */; };
 		42DFD51016B0F09700D0BBAB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DFD50F16B0F09700D0BBAB /* AppDelegate.m */; };
 		42DFD51316B0F09700D0BBAB /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DFD51216B0F09700D0BBAB /* HelloWorldLayer.m */; };
-		42DFD51616B0F09700D0BBAB /* IntroLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DFD51516B0F09700D0BBAB /* IntroLayer.m */; };
 		42DFD51E16B0F0C300D0BBAB /* Player2-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD51C16B0F0C300D0BBAB /* Player2-hd.png */; };
 		42DFD51F16B0F0C300D0BBAB /* Player2.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD51D16B0F0C300D0BBAB /* Player2.png */; };
 		42DFD52916B1199D00D0BBAB /* Streak.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DFD52816B1199D00D0BBAB /* Streak.png */; };
@@ -206,6 +206,8 @@
 		427CF33516DC39CD00A6B65B /* Backboard-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Backboard-hd.png"; sourceTree = "<group>"; };
 		427CF33816DC3A0200A6B65B /* Backboard2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Backboard2.png; sourceTree = "<group>"; };
 		427CF33916DC3A0200A6B65B /* Backboard2-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Backboard2-hd.png"; sourceTree = "<group>"; };
+		427CF34416E1840C00A6B65B /* Defender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Defender.h; sourceTree = "<group>"; };
+		427CF34516E1840C00A6B65B /* Defender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Defender.m; sourceTree = "<group>"; };
 		42A3CC3416C8318600410506 /* FbField.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FbField.png; sourceTree = "<group>"; };
 		42A3CC3616C8318600410506 /* YellowArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = YellowArrow.png; sourceTree = "<group>"; };
 		42A3CC3B16C833BD00410506 /* FbField-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FbField-hd.png"; sourceTree = "<group>"; };
@@ -495,8 +497,6 @@
 		42DFD50F16B0F09700D0BBAB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		42DFD51116B0F09700D0BBAB /* HelloWorldLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloWorldLayer.h; sourceTree = "<group>"; };
 		42DFD51216B0F09700D0BBAB /* HelloWorldLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloWorldLayer.m; sourceTree = "<group>"; };
-		42DFD51416B0F09700D0BBAB /* IntroLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntroLayer.h; sourceTree = "<group>"; };
-		42DFD51516B0F09700D0BBAB /* IntroLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IntroLayer.m; sourceTree = "<group>"; };
 		42DFD51C16B0F0C300D0BBAB /* Player2-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Player2-hd.png"; sourceTree = "<group>"; };
 		42DFD51D16B0F0C300D0BBAB /* Player2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Player2.png; sourceTree = "<group>"; };
 		42DFD52816B1199D00D0BBAB /* Streak.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Streak.png; sourceTree = "<group>"; };
@@ -598,8 +598,8 @@
 				42AB6CA516D6D4EC00284FBF /* Ball.m */,
 				42AB6CA816D8815200284FBF /* WideReceivers.h */,
 				42AB6CA916D8815200284FBF /* WideReceivers.m */,
-				42DFD51416B0F09700D0BBAB /* IntroLayer.h */,
-				42DFD51516B0F09700D0BBAB /* IntroLayer.m */,
+				427CF34416E1840C00A6B65B /* Defender.h */,
+				427CF34516E1840C00A6B65B /* Defender.m */,
 				42DFD39716B0F09400D0BBAB /* Resources */,
 				42DFD3B116B0F09400D0BBAB /* libs */,
 				42DFD50A16B0F09600D0BBAB /* Supporting Files */,
@@ -1219,10 +1219,10 @@
 				42DFD50D16B0F09600D0BBAB /* main.m in Sources */,
 				42DFD51016B0F09700D0BBAB /* AppDelegate.m in Sources */,
 				42DFD51316B0F09700D0BBAB /* HelloWorldLayer.m in Sources */,
-				42DFD51616B0F09700D0BBAB /* IntroLayer.m in Sources */,
 				42AB6CA616D6D4EC00284FBF /* Ball.m in Sources */,
 				42AB6CAA16D8815200284FBF /* WideReceivers.m in Sources */,
 				427CF30F16D9D4A400A6B65B /* SlidingMenu.m in Sources */,
+				427CF34616E1840C00A6B65B /* Defender.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
