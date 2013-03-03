@@ -13,9 +13,7 @@
 @synthesize playerBottomtoTop, playerLefttoRight, playerMoving, playerSlope, playerControl, holdPoint, playerStartPos;
 -(id) initWithFile:(NSString *)filename {
 	if ((self = [super initWithFile:filename])) {
-      self.playerStartPos = self.position;
-      NSLog(@"Player pos: %@", NSStringFromCGPoint(self.playerStartPos));
-      
+      self.playerStartPos = self.position;      
    }
    return self;
 }
@@ -41,7 +39,6 @@
       //calculate slope from points
       CGPoint lastPoint = self.position;
       float playerMovementSlope = (self.position.y - holdPoint.y) / (self.position.x - holdPoint.x);
-      NSLog(@"Player slope: %f", playerMovementSlope);
       if (self.position.y < holdPoint.y){
          self.playerBottomtoTop = NO;
       }
@@ -64,7 +61,6 @@
       
       if (self.position.x == holdPoint.x){
          infSlope = YES;
-         NSLog(@"infinity slope:");
       }
       
       //slope if not infinity
@@ -135,7 +131,6 @@
       [self runAction: [CCSequence actions:bezierSeq, nil]];
    }
    else if (!self.playerMoving){
-      NSLog(@"Not moving");
       id moveBack = [CCMoveTo actionWithDuration:3.5 position:playerStartPos];
       
       [self runAction:[CCSequence actions:moveBack, nil]];

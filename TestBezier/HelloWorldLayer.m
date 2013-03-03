@@ -19,7 +19,7 @@
 
 // HelloWorldLayer implementation
 @implementation HelloWorldLayer
-
+@synthesize player1, player2, qb, followPlayers;
 // Helper class method that creates a Scene with the HelloWorldLayer as the only child.
 +(CCScene *) scene
 {
@@ -123,10 +123,13 @@
       [playerLayer addChild:player2];
       [playerArray addObject:player2];
       
+      NSLog(@"here");
       defender = [Defender spriteWithFile:@"Player2.png"];
       defender.position = ccp(160, 100);
+      defender.color = ccYELLOW;
       [defenderLayer addChild:defender];
-      
+      NSLog(@"here");
+
       
       swipeStarted = NO;
       pastDistance = NO;
@@ -143,7 +146,7 @@
       menuShowing = YES;
       menuTouch = NO;
       menuAdjust = NO;
-      
+
       for (int i = 0; i < [playerArray count]; i ++){
          CCSprite *player = (CCSprite*)[playerArray objectAtIndex:i];
          CCMotionStreak *playerStreak = [CCMotionStreak streakWithFade:0.8 minSeg:1 width:16 color:ccWHITE textureFilename:@"Streak.png"];
@@ -251,28 +254,32 @@
          player2startPos = point;
       }
    }
-   NSLog(@"Play Array: %@", playArray);
-   NSLog(@"First Play: %@", firstPlay);
-   NSLog(@"Coordinates1: %@", player1Book);
-   NSLog(@"Coordinates2: %@", player2Book);
-   
 }
 
 
--(void) restartPlay{
+-(void) restartPlay:(id) sender{
    playStarted = NO;
    
 }
--(void) moveBack{
+-(void) removeBallCopy:(id)sender{
+   [self removeChild:ballCopy cleanup:YES];
+   ballToPlayer = NO;
+}
+-(void) moveBack:(NSString*)string{
    [player1 movePlayerBack];
    [player2 movePlayerBack];
-   
+   if ([string floatValue] != 0){
+      id fade = [CCFadeOut actionWithDuration:1.5f];
+      id callBack = [CCCallFunc actionWithTarget:self selector:@selector(removeBallCopy:)];
+      [ballCopy runAction:[CCSequence actions:fade, callBack, nil]];
+   }
 }
 -(void) playOverWithDelay:(float) delay withDistance: (float) ballDist{
    //move players back after delay
-   [self performSelector:@selector(moveBack) withObject:nil afterDelay:delay];
+   NSString *object = [NSString stringWithFormat:@"%f", ballDist];
+   [self performSelector:@selector(moveBack:) withObject:object afterDelay:delay];
    
-   [self performSelector:@selector(restartPlay) withObject:nil afterDelay:delay + 3.5];
+   [self performSelector:@selector(restartPlay:) withObject:nil afterDelay:delay + 3.5];
    
    for (CCSprite *tile in fieldTileLayer.children){
       [tile runAction:[CCMoveBy actionWithDuration:3.5f position:ccp(0, -ballDist)]];
@@ -292,7 +299,9 @@
    }
    return returnString;
 }
-
+-(void) moveDefenderBack{
+   [defender runAction:[CCMoveTo actionWithDuration:1.0f position:ccp(160, 200)]];
+}
 #pragma mark Gamelogic
 - (void)tick:(ccTime) dt {
    
@@ -304,26 +313,39 @@
    
    for (Ball *ball in ballLayer.children){
       for (WideReceivers *player in playerLayer.children){
+         
          if (CGRectIntersectsRect(player.boundingBox, ball.boundingBox)){
+            
+            [ball stopAllActions];
+            ballCopy = [CCSprite spriteWithFile:@"Player2.png"];
+            ballCopy.position = ball.position;
+            ballCopy.color = ccRED;
+            [self addChild:ballCopy z:20];
+            ballToPlayer = YES;
+            ballToStick = player;
+            
             [removeArray addObject:ball];
             [ballArray removeObject:ball];
             
-            //[[[CCDirector sharedDirector] scheduler]setTimeScale:1.0];
             //play is over
             //ball is caught
             player1Hold = player1.position;
             player2Hold = player2.position;
             [player1 setHoldPosition: player1.position];
             [player2 setHoldPosition: player2.position];
+            playIsLive = NO;
+            followPlayers = NO;
             
             float playDist = ball.position.y - qb.position.y;
-            [self playOverWithDelay:0.1f withDistance: playDist];
+            
+            [self moveDefenderBack];
+            [self playOverWithDelay:0.5f withDistance: playDist];
          }
       }
+      
       if (ball.position.y >= 480 || ball.position.x <= 0 || ball.position.x >= 300){
          [removeArray addObject:ball];
          [ballArray removeObject:ball];
-         
          
          //play is over
          //ball out of bounds
@@ -331,10 +353,13 @@
          player2Hold = player2.position;
          [player1 setHoldPosition: player1.position];
          [player2 setHoldPosition: player2.position];
+         followPlayers = NO;
+         playIsLive = NO;
          
+         [self moveDefenderBack];
          [self playOverWithDelay:0.75f withDistance: 0];
       }
-
+      
    }
    
    for (CCSprite *tile in fieldTileLayer.children){
@@ -351,9 +376,36 @@
    if (swipeStarted){
       timeSwiped ++;
    }
-}
-#pragma mark Touch Calculations
+   
+   if (ballToPlayer){
+      float dx = ballToStick.position.x - ballCopy.position.x;
+      float dy = ballToStick.position.y - ballCopy.position.y;
+      float d = sqrt(dx*dx + dy*dy);
+      float v = 160;
+      
+      if (d > 2){
+         ballCopy.position = ccpAdd(ballCopy.position, ccp(dx/d * v * dt, dy/d * v *dt));
+      }
+      else{
+         ballCopy.position = ballToStick.position;
+      }
+   }
+   
+   if (player1.playerMoving && playIsLive){
+      followPlayers = YES;
+   }
 
+   if (followPlayers){
+      if (defender.getThePlayer == 1){
+         [defender followPlayer: player1];
+      }
+      else if (defender.getThePlayer == 2){
+         [defender followPlayer: player2];
+      }
+   }
+}
+
+#pragma mark Touch Calculations
 -(void) calculatePoints{
    //first touch point
    CGPoint startPos = [[pointArray objectAtIndex:0] CGPointValue];
@@ -437,36 +489,39 @@
    
 }
 -(void)throwBallWithTime:(int)time{
-   
-   Ball *ball1 = [Ball spriteWithFile:@"Player2.png"];
-   ball1.position = qb.position;
-   [ballLayer addChild:ball1];
-   
-   //calculate time for action based on time taken to swipe
-   float actionTime = timeSwiped * 15 / dist;
-   if (actionTime < 0.5){
-      actionTime = 0.5;
+   if ([ballArray count] < 1){
+      Ball *ball = [Ball spriteWithFile:@"Player2.png"];
+      ball.position = qb.position;
+      ball.color = ccRED;
+      [ballLayer addChild:ball];
+      [ballArray addObject:ball];
+      
+      //calculate time for action based on time taken to swipe
+      float actionTime = timeSwiped * 15 / dist;
+      if (actionTime < 0.5){
+         actionTime = 0.5;
+      }
+      else if (actionTime > 3){
+         actionTime = 3;
+      }
+      
+      NSMutableArray *bezierArray1 = [NSMutableArray array];
+      // Add Beziers
+      // Bezier 0
+      ccBezierConfig bzConfig_0;
+      
+      bzConfig_0.controlPoint_1 = startTouch;
+      bzConfig_0.controlPoint_2 = point2;
+      bzConfig_0.endPosition = endPosition;
+      CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:actionTime bezier:bzConfig_0];
+      [bezierArray1 addObject:bezierTo_0];
+      
+      // create actionsequence and run action
+      CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
+      [ball runAction: [CCSequence actions:bezierSeq, nil]];
+      
+      timeSwiped = 0;
    }
-   else if (actionTime > 3){
-      actionTime = 3;
-   }
-   
-   NSMutableArray *bezierArray1 = [NSMutableArray array];
-   // Add Beziers
-   // Bezier 0
-   ccBezierConfig bzConfig_0;
-   
-   bzConfig_0.controlPoint_1 = startTouch;
-   bzConfig_0.controlPoint_2 = point2;
-   bzConfig_0.endPosition = endPosition;
-   CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:actionTime bezier:bzConfig_0];
-   [bezierArray1 addObject:bezierTo_0];
-   
-   // create actionsequence and run action
-   CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
-   [ball1 runAction: [CCSequence actions:bezierSeq, nil]];
-   
-   timeSwiped = 0;
 }
 #pragma mark Touches
 
@@ -485,6 +540,8 @@
       }
       else if (firstTouch.y < touchLocation.y && firstTouch.y < 15){
          showRoutes = YES;
+         [[[CCDirector sharedDirector] scheduler]setTimeScale:.5];
+
       }
       else if (menuTouch){
          CGPoint oldTouchLocation = [touch previousLocationInView:touch.view];
@@ -528,8 +585,11 @@
       }
    }
 }
+
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
    showRoutes = NO;
+   [[[CCDirector sharedDirector] scheduler]setTimeScale:1.0];
+
    for (UITouch *touch in touches) {
       if (touchStartedAtPlayer){
          touchLocation = [touch locationInView: [touch view]];
@@ -579,7 +639,9 @@
          //start the play
          [player1 playerStreak: player1Book];
          [player2 playerStreak: player2Book];
-
+         [defender pickaPlayer];
+         followPlayers = YES;
+         playIsLive = YES;
       }
       //if the touch contains the menu
       else if (CGRectContainsPoint(playMaker.boundingBox, touchLocation)){
