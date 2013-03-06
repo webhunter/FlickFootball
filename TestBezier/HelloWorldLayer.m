@@ -116,12 +116,12 @@
       [playerArray addObject:player2];
       
       defender1 = [Defender spriteWithFile:@"Player2.png"];
-      defender1.position = ccp(160, 100);
+      defender1.position = ccpAdd(player1startPos, ccp(0, 50));
       defender1.color = ccYELLOW;
       [defenderLayer addChild:defender1];
       
       defender2 = [Defender spriteWithFile:@"Player2.png"];
-      defender2.position = ccp(260, 100);
+      defender2.position = ccpAdd(player2startPos, ccp(0, 50));
       defender2.color = ccYELLOW;
       [defenderLayer addChild:defender2];
       
@@ -138,7 +138,8 @@
       menuTouch = NO;
       menuAdjust = NO;
       [Singleton sharedSingleron].playersHaveReturned = YES;
-      
+      [Singleton sharedSingleron].ballToPlayer = NO;
+
       for (int i = 0; i < [playerArray count]; i ++){
          CCSprite *player = (CCSprite*)[playerArray objectAtIndex:i];
          CCMotionStreak *playerStreak = [CCMotionStreak streakWithFade:0.8 minSeg:1 width:16 color:ccWHITE textureFilename:@"Streak.png"];
@@ -240,29 +241,21 @@
       }
    }
 }
--(void) restartPlay:(id) sender{
-   playStarted = NO;
-}
--(void) removeBallCopy:(id)sender{
-   [self removeChild:ballCopy cleanup:YES];
-   ballToPlayer = NO;
-}
+
 -(void) moveBack:(NSString*)string{
    [player1 movePlayerBack];
    [player2 movePlayerBack];
-   if ([string floatValue] != 0){
-      id fade = [CCFadeOut actionWithDuration:1.5f];
-      id callBack = [CCCallFunc actionWithTarget:self selector:@selector(removeBallCopy:)];
-      [ballCopy runAction:[CCSequence actions:fade, callBack, nil]];
-   }
+}
+-(void) restartPlay:(id)sender{
+   playStarted = NO;
+   copiedBall = nil;
 }
 -(void) playOverWithDelay:(float) delay withDistance: (float) ballDist{
    //move players back after delay
    NSString *object = [NSString stringWithFormat:@"%f", ballDist];
    [self performSelector:@selector(moveBack:) withObject:object afterDelay:delay];
-   
    [self performSelector:@selector(restartPlay:) withObject:nil afterDelay:delay + 3.5];
-   
+
    for (CCSprite *tile in fieldTileLayer.children){
       [tile runAction:[CCMoveBy actionWithDuration:3.5f position:ccp(0, -ballDist)]];
    }
@@ -282,8 +275,8 @@
    return returnString;
 }
 -(void) moveDefenderBack{
-   [defender1 runAction:[CCMoveTo actionWithDuration:1.0f position:ccp(160, 200)]];
-   [defender2 runAction:[CCMoveTo actionWithDuration:1.0f position:ccp(260, 200)]];
+   [defender1 runAction:[CCMoveTo actionWithDuration:1.0f position:ccpAdd(player1startPos, ccp(0, 50))]];
+   [defender2 runAction:[CCMoveTo actionWithDuration:1.0f position:ccpAdd(player2startPos, ccp(0, 50))]];
    
 }
 #pragma mark Gamelogic
@@ -300,13 +293,29 @@
          
          if (CGRectIntersectsRect(player.boundingBox, ball.boundingBox)){
             [ball stopAllActions];
-            [ball createCopy];
             
-            ballCopy = [CCSprite spriteWithFile:@"Player2.png"];
-            ballCopy.position = ball.position;
-            ballCopy.color = ccRED;
-            [self addChild:ballCopy z:20];
-            ballToPlayer = YES;
+            /*
+            BallCopy *copiedBall = [BallCopy spriteWithFile:@"Player2.png"];
+            [copiedBall positionBall: ball collidedWith: player];
+            [self addChild:copiedBall z:50];
+            [copiedBall fadeAndRemove];
+            */
+            
+            if (copiedBall == nil){
+               copiedBall = [CopyBall spriteWithFile:@"Player2.png"];
+               copiedBall.position = ball.position;
+               copiedBall.color = ccRED;
+               [self addChild:copiedBall z:20];
+               [copiedBall fadeAndRemove];
+            }
+            /*
+             ballCopy = [CCSprite spriteWithFile:@"Player2.png"];
+             ballCopy.position = ball.position;
+             ballCopy.color = ccRED;
+             [self addChild:ballCopy z:20];
+             */
+            
+            [Singleton sharedSingleron].ballToPlayer = YES;
             ballToStick = player;
             
             [removeArray addObject:ball];
@@ -321,19 +330,47 @@
             float playDist = ball.position.y - qb.position.y;
             [self moveDefenderBack];
             [self playOverWithDelay:0.5f withDistance: playDist];
+            
          }
       }
       
       for (Defender *defender in defenderLayer.children){
          if (CGRectIntersectsRect(defender.boundingBox, ball.boundingBox)){
             [ball stopAllActions];
+            
+            /*
+            BallCopy *copiedBall = [BallCopy spriteWithFile:@"Player2.png"];
+            [copiedBall positionBall: ball collidedWith: defender];
+            [self addChild:copiedBall z:50];
+            [copiedBall fadeAndRemove];
+             */
+            [removeArray addObject:ball];
+            [ballArray removeObject:ball];
+            
+            if (copiedBall == nil){
+               copiedBall = [CopyBall spriteWithFile:@"Player2.png"];
+               copiedBall.position = ball.position;
+               copiedBall.color = ccRED;
+               [self addChild:copiedBall z:20];
+               [copiedBall fadeAndRemove];
+            }
+            /*
             ballCopy = [CCSprite spriteWithFile:@"Player2.png"];
             ballCopy.position = ball.position;
             ballCopy.color = ccRED;
             [self addChild:ballCopy z:20];
-            ballToPlayer = YES;
+             */
+            [Singleton sharedSingleron].ballToPlayer = YES;
             ballToStick = defender;
+             
+            [player1 setHoldPosition: player1.position];
+            [player2 setHoldPosition: player2.position];
             
+            [Singleton sharedSingleron].defenderFollowBool = NO;
+            
+            [self moveDefenderBack];
+            [self playOverWithDelay:0.75f withDistance: 0];
+
          }
       }
       if (ball.position.y >= 480 || ball.position.x <= -60 || ball.position.x >= 380){
@@ -348,6 +385,7 @@
          
          [self moveDefenderBack];
          [self playOverWithDelay:0.75f withDistance: 0];
+
       }
    }
    
@@ -366,17 +404,18 @@
       timeSwiped ++;
    }
    
-   if (ballToPlayer){
-      float dx = ballToStick.position.x - ballCopy.position.x;
-      float dy = ballToStick.position.y - ballCopy.position.y;
+   if ([Singleton sharedSingleron].ballToPlayer){
+      NSLog(@"continue to follow?");
+      float dx = ballToStick.position.x - copiedBall.position.x;
+      float dy = ballToStick.position.y - copiedBall.position.y;
       float d = sqrt(dx*dx + dy*dy);
       float v = 160;
       
       if (d > 2){
-         ballCopy.position = ccpAdd(ballCopy.position, ccp(dx/d * v * dt, dy/d * v *dt));
+         copiedBall.position = ccpAdd(copiedBall.position, ccp(dx/d * v * dt, dy/d * v *dt));
       }
       else{
-         ballCopy.position = ballToStick.position;
+         copiedBall.position = ballToStick.position;
       }
    }
 }

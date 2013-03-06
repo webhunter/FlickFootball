@@ -9,10 +9,12 @@
 #import "CCSprite.h"
 
 @interface Ball : CCSprite{
-   
+   CCSprite *ballCopy;
+   CCSprite *player;
 }
 
 -(id) initWithFile:(NSString *)filename;
 -(id) createCopy;
+-(id) followPlayer:(CCSprite*)playerToFollow;
 
 @end

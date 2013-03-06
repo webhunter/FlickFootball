@@ -16,7 +16,7 @@
 #import "Singleton.h"
 #import "SlidingMenu.h"
 #import "WideReceivers.h"
-
+#import "CopyBall.h"
 // HelloWorldLayer
 @interface HelloWorldLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
 {
@@ -32,6 +32,7 @@
    CCSprite *qb;
    WideReceivers *player1;
    WideReceivers *player2;
+   CopyBall *copiedBall;
    Defender *defender1;
    Defender *defender2;
    CCSprite *ballToStick;
@@ -82,8 +83,7 @@
    CCSprite *playBg1;
    CCLayer *menuLayer;
    bool menuShowing;
-   bool menuAdjust;
-   bool ballToPlayer;
+   bool menuAdjust;   
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child

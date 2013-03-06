@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		427A695D16E72A95001410C3 /* CopyBall.m in Sources */ = {isa = PBXBuildFile; fileRef = 427A695C16E72A95001410C3 /* CopyBall.m */; };
 		427CF30716D9D1FC00A6B65B /* SlidingMenuGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 427CF30516D9CE5900A6B65B /* SlidingMenuGrid.m */; };
 		427CF30B16D9D23E00A6B65B /* box.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF30916D9D23E00A6B65B /* box.png */; };
 		427CF30C16D9D23E00A6B65B /* box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF30A16D9D23E00A6B65B /* box@2x.png */; };
@@ -186,6 +187,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		427A695B16E72A95001410C3 /* CopyBall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CopyBall.h; sourceTree = "<group>"; };
+		427A695C16E72A95001410C3 /* CopyBall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CopyBall.m; sourceTree = "<group>"; };
 		427CF30516D9CE5900A6B65B /* SlidingMenuGrid.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SlidingMenuGrid.m; sourceTree = "<group>"; };
 		427CF30616D9CE5900A6B65B /* SlidingMenuGrid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SlidingMenuGrid.h; sourceTree = "<group>"; };
 		427CF30916D9D23E00A6B65B /* box.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = box.png; sourceTree = "<group>"; };
@@ -598,6 +601,8 @@
 				427CF30E16D9D4A400A6B65B /* SlidingMenu.m */,
 				42AB6CA416D6D4EC00284FBF /* Ball.h */,
 				42AB6CA516D6D4EC00284FBF /* Ball.m */,
+				427A695B16E72A95001410C3 /* CopyBall.h */,
+				427A695C16E72A95001410C3 /* CopyBall.m */,
 				42AB6CA816D8815200284FBF /* WideReceivers.h */,
 				42AB6CA916D8815200284FBF /* WideReceivers.m */,
 				427CF34416E1840C00A6B65B /* Defender.h */,
@@ -1227,6 +1232,7 @@
 				427CF30F16D9D4A400A6B65B /* SlidingMenu.m in Sources */,
 				427CF34616E1840C00A6B65B /* Defender.m in Sources */,
 				42B915A516E6A86E00478E98 /* Singleton.m in Sources */,
+				427A695D16E72A95001410C3 /* CopyBall.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,6 +12,7 @@
 
 @synthesize defenderFollowBool = _defenderFollowBool;
 @synthesize playersHaveReturned = _playersHaveReturned;
+@synthesize ballToPlayer = _ballToPlayer;
 
 static Singleton* _sharedSingleton = nil;
 
