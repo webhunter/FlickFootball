@@ -13,5 +13,6 @@
 }
 
 -(id) initWithFile:(NSString *)filename;
+-(id) createCopy;
 
 @end

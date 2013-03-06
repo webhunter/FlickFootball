@@ -11,6 +11,7 @@
 
 @implementation WideReceivers
 @synthesize playerBottomtoTop, playerLefttoRight, playerMoving, playerSlope, playerControl, holdPoint, playerStartPos;
+
 -(id) initWithFile:(NSString *)filename {
 	if ((self = [super initWithFile:filename])) {
       self.playerStartPos = self.position;      
@@ -27,6 +28,9 @@
    self.holdPoint = holder;
    
    return self;
+}
+-(void) callBack:(id)sender{
+   [Singleton sharedSingleron].playersHaveReturned = YES;
 }
 -(id) movePlayerBack{
    [self stopAllActions];
@@ -126,18 +130,22 @@
       CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:3.5f bezier:bzConfig_0];
       [bezierArray1 addObject:bezierTo_0];
       
+      id callBack = [CCCallFunc actionWithTarget:self selector:@selector(callBack:)];
       // create actionsequence and run action
       CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
-      [self runAction: [CCSequence actions:bezierSeq, nil]];
+      
+      [self runAction: [CCSequence actions:bezierSeq, callBack, nil]];
    }
    else if (!self.playerMoving){
       id moveBack = [CCMoveTo actionWithDuration:3.5 position:playerStartPos];
-      
-      [self runAction:[CCSequence actions:moveBack, nil]];
+      id callBack = [CCCallFunc actionWithTarget:self selector:@selector(callBack:)];
+
+      [self runAction:[CCSequence actions:moveBack, callBack, nil]];
    }
    
    return self;
 }
+
 -(void) playerMoving:(id)sender{
    self.playerMoving = YES;
 }

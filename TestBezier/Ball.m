@@ -16,4 +16,7 @@
    }
    return self;
 }
+-(id) createCopy{
+   
+}
 @end

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		427CF30716D9D1FC00A6B65B /* SlidingMenuGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 427CF30516D9CE5900A6B65B /* SlidingMenuGrid.m */; };
-		427CF30816D9D1FC00A6B65B /* SlidingMenuGrid.h in Sources */ = {isa = PBXBuildFile; fileRef = 427CF30616D9CE5900A6B65B /* SlidingMenuGrid.h */; };
 		427CF30B16D9D23E00A6B65B /* box.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF30916D9D23E00A6B65B /* box.png */; };
 		427CF30C16D9D23E00A6B65B /* box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF30A16D9D23E00A6B65B /* box@2x.png */; };
 		427CF30F16D9D4A400A6B65B /* SlidingMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 427CF30E16D9D4A400A6B65B /* SlidingMenu.m */; };
@@ -54,6 +53,7 @@
 		42AB6CAA16D8815200284FBF /* WideReceivers.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AB6CA916D8815200284FBF /* WideReceivers.m */; };
 		42AB6CBB16D883DD00284FBF /* playTest.png in Resources */ = {isa = PBXBuildFile; fileRef = 42AB6CB916D883DD00284FBF /* playTest.png */; };
 		42AB6CBC16D883DD00284FBF /* playTest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 42AB6CBA16D883DD00284FBF /* playTest@2x.png */; };
+		42B915A516E6A86E00478E98 /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B915A416E6A86E00478E98 /* Singleton.m */; };
 		42DFD38516B0F09400D0BBAB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42DFD38416B0F09400D0BBAB /* QuartzCore.framework */; };
 		42DFD38716B0F09400D0BBAB /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42DFD38616B0F09400D0BBAB /* OpenGLES.framework */; };
 		42DFD38916B0F09400D0BBAB /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42DFD38816B0F09400D0BBAB /* OpenAL.framework */; };
@@ -237,6 +237,8 @@
 		42AB6CA916D8815200284FBF /* WideReceivers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WideReceivers.m; sourceTree = "<group>"; };
 		42AB6CB916D883DD00284FBF /* playTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playTest.png; sourceTree = "<group>"; };
 		42AB6CBA16D883DD00284FBF /* playTest@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playTest@2x.png"; sourceTree = "<group>"; };
+		42B915A316E6A86E00478E98 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
+		42B915A416E6A86E00478E98 /* Singleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Singleton.m; sourceTree = "<group>"; };
 		42DFD38016B0F09400D0BBAB /* TestBezier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestBezier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42DFD38416B0F09400D0BBAB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		42DFD38616B0F09400D0BBAB /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -600,6 +602,8 @@
 				42AB6CA916D8815200284FBF /* WideReceivers.m */,
 				427CF34416E1840C00A6B65B /* Defender.h */,
 				427CF34516E1840C00A6B65B /* Defender.m */,
+				42B915A316E6A86E00478E98 /* Singleton.h */,
+				42B915A416E6A86E00478E98 /* Singleton.m */,
 				42DFD39716B0F09400D0BBAB /* Resources */,
 				42DFD3B116B0F09400D0BBAB /* libs */,
 				42DFD50A16B0F09600D0BBAB /* Supporting Files */,
@@ -1115,7 +1119,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				427CF30716D9D1FC00A6B65B /* SlidingMenuGrid.m in Sources */,
-				427CF30816D9D1FC00A6B65B /* SlidingMenuGrid.h in Sources */,
 				42DFD3B516B0F09400D0BBAB /* CCAction.m in Sources */,
 				42DFD3B816B0F09400D0BBAB /* CCActionCamera.m in Sources */,
 				42DFD3BB16B0F09400D0BBAB /* CCActionCatmullRom.m in Sources */,
@@ -1223,6 +1226,7 @@
 				42AB6CAA16D8815200284FBF /* WideReceivers.m in Sources */,
 				427CF30F16D9D4A400A6B65B /* SlidingMenu.m in Sources */,
 				427CF34616E1840C00A6B65B /* Defender.m in Sources */,
+				42B915A516E6A86E00478E98 /* Singleton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1287,8 +1291,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "13B96510-DDD8-4AB1-9010-42A59AEE27F5";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "13B96510-DDD8-4AB1-9010-42A59AEE27F5";
+				PROVISIONING_PROFILE = "47A2ACD4-84EE-4BDD-BEC7-ED84377BB88E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "47A2ACD4-84EE-4BDD-BEC7-ED84377BB88E";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1310,8 +1314,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "13B96510-DDD8-4AB1-9010-42A59AEE27F5";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "13B96510-DDD8-4AB1-9010-42A59AEE27F5";
+				PROVISIONING_PROFILE = "47A2ACD4-84EE-4BDD-BEC7-ED84377BB88E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "47A2ACD4-84EE-4BDD-BEC7-ED84377BB88E";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

@@ -7,15 +7,15 @@
 //
 #import "CCSprite.h"
 #import "WideReceivers.h"
-
+#import "Singleton.h"
 @interface Defender : CCSprite{
    int playerNumber;
-   int i;
+   bool defenderPlacementBool;
+   WideReceivers *followPlayer;
 }
 
 -(id) initWithFile:(NSString *)filename;
 -(id) followPlayer: (WideReceivers*) player;
--(id) pickaPlayer;
--(int) getThePlayer;
+@property (readwrite) bool followPlayerBool;
 
 @end

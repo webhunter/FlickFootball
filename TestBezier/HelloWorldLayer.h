@@ -13,8 +13,9 @@
 #import "cocos2d.h"
 #import "Defender.h"
 #import "Ball.h"
-
-bool followPlayers;
+#import "Singleton.h"
+#import "SlidingMenu.h"
+#import "WideReceivers.h"
 
 // HelloWorldLayer
 @interface HelloWorldLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
@@ -23,9 +24,7 @@ bool followPlayers;
    CCLayer *playerLayer;
    CCLayer *fieldTileLayer;
    CCLayer *defenderLayer;
-   BOOL bezierLTR;
    BOOL swipeStarted;
-   BOOL pastDistance;
    BOOL touchStartedAtPlayer;
    int timeSwiped;
    int sentTime;
@@ -33,7 +32,10 @@ bool followPlayers;
    CCSprite *qb;
    WideReceivers *player1;
    WideReceivers *player2;
-   Defender *defender;
+   Defender *defender1;
+   Defender *defender2;
+   CCSprite *ballToStick;
+
    CCSprite *ballCopy;
    NSMutableArray *ballArray;
    NSMutableArray *removeArray;
@@ -42,7 +44,6 @@ bool followPlayers;
    NSMutableArray *fieldTileArray;
    CGPoint playerTouchPoint;
    CGPoint touchLocation;
-   CGPoint tlCopy;
    float velo;
    float dist;
    CGPoint endPosition;
@@ -69,41 +70,11 @@ bool followPlayers;
    CGPoint player1Control;
    CGPoint player2Control;
    
-   float player1Slope;
-   float player2Slope;
-   
-   CGPoint player1Hold;
-   CGPoint player2Hold;
-   
-   BOOL player1BottomtoTop;
-   BOOL player2BottomtoTop;
-   BOOL player1LefttoRight;
-   BOOL player2LefttoRight;
    BOOL showRoutes;
-   BOOL player1Moving;
-   BOOL player2Moving;
+
    BOOL playStarted;
    NSMutableArray *player1Book;
    NSMutableArray *player2Book;
-   
-   
-   NSMutableArray *player1Movements;
-   NSMutableArray *player2Movements;
-   CGPoint p1;
-   CGPoint p2;
-   CGPoint p3;
-   CGPoint p4;
-   
-   CGPoint p12;
-   CGPoint p22;
-   CGPoint p32;
-   CGPoint p42;
-   
-   CGPoint newP1;
-   CGPoint newP2;
-
-   CGPoint newP12;
-   CGPoint newP22;
    
    bool menuTouch;
    CCSprite *playMaker;
@@ -112,10 +83,7 @@ bool followPlayers;
    CCLayer *menuLayer;
    bool menuShowing;
    bool menuAdjust;
-
-   bool playIsLive;
    bool ballToPlayer;
-   CCSprite *ballToStick;
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
