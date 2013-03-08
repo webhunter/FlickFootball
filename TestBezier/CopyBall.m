@@ -16,6 +16,13 @@
    }
    return self;
 }
+-(CCSprite*)getSticky{
+   return stickyplayer;
+}
+-(id) setPlayerToStick:(CCSprite*)sender{
+   stickyplayer = sender;
+   return self;
+}
 -(void) removeCopied:(id)sender{
    [Singleton sharedSingleron].ballToPlayer = NO;
 

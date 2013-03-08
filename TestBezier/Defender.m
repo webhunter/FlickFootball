@@ -11,16 +11,103 @@
 
 
 @implementation Defender
+@synthesize defenderArray;
 
 -(id) initWithFile:(NSString *)filename {
 	if ((self = [super initWithFile:filename])) {
       defenderPlacementBool = NO;
+      defenderArray = [[NSMutableArray alloc] init];
       [self schedule:@selector(move:)];
    }
    return self;
 }
+-(id) moveBack:(CGPoint) endpt{
+   CGPoint p1 = [[defenderArray objectAtIndex:[defenderArray count]-6] CGPointValue];
+   CGPoint p2 = [[defenderArray objectAtIndex:[defenderArray count]-1] CGPointValue];
+   p2 = self.position;
+   
+   float defenderMovementSlope = (p2.y - p1.y) / (p2.x - p1.x);
+   float adjDist = 180;
+   float posX = sqrt(pow(adjDist, 2) / (1 + pow(defenderMovementSlope, 2)));
+   //calculate y coordinate of control point
+   float posY = defenderMovementSlope * posX;
+   CGPoint playerControl;
+   bool defenderBottomtoTop;
+   
+   if (p2.y > p1.y){
+      defenderBottomtoTop = YES;
+   }
+   else if (p2.y < p1.y){
+      defenderBottomtoTop = NO;
+   }
+   
+   bool infSlope = NO;
+   
+   if (self.position.x == p1.x){
+      infSlope = YES;
+   }
+   
+   if (!infSlope){
+      //slope is greater than 0
+      if (defenderMovementSlope > 0){
+         //player move bottom left to top right
+         if (defenderBottomtoTop){
+            //moving down left from right
+            playerControl = ccpAdd(p2, ccp(posX, posY));
+         }
+         //player moving top right to bottom left
+         else if (!defenderBottomtoTop){
+            //moving down left from right
+            playerControl = ccpSub(p2, ccp(posX, posY));
+         }
+      }
+      //slope is less than 0
+      else if (defenderMovementSlope < 0){
+         //player move bottom right to top left
+         if (defenderBottomtoTop){
+            //moving down left from right
+            playerControl = ccpSub(p2, ccp(posX, posY));
+         }
+         //player move top left to bottom right
+         else if (!defenderBottomtoTop){
+            //moving down left from right
+            playerControl = ccpAdd(p2, ccp(posX, posY));
+         }
+      }
+   }
+   else if (infSlope){
+      if (defenderBottomtoTop){
+         playerControl = ccpAdd(p2, ccp(0, 200));
+      }
+      else if (!defenderBottomtoTop){
+         playerControl = ccpAdd(p2, ccp(0, -200));
+         
+      }
+   }
+   NSMutableArray *bezierArray1 = [NSMutableArray array];
+   // Add Beziers
+   // Bezier 0
+   ccBezierConfig bzConfig_0;
+   bzConfig_0.controlPoint_1 = playerControl;
+   bzConfig_0.controlPoint_2 = endpt;
+   bzConfig_0.endPosition = endpt;
+   CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:3.5f bezier:bzConfig_0];
+   [bezierArray1 addObject:bezierTo_0];
+   
+   [Singleton sharedSingleron].b1 = self.position;
+   [Singleton sharedSingleron].b2 = playerControl;
+   [Singleton sharedSingleron].b3 = endpt;
+   // create actionsequence and run action
+   CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
+   
+   [self runAction: [CCSequence actions:bezierSeq, nil]];
+   
+   return self;
+}
 -(void) move:(ccTime)dt{
    if ([Singleton sharedSingleron].defenderFollowBool){
+      [defenderArray addObject:[NSValue valueWithCGPoint:self.position]];
+      
       float dx = followPlayer.position.x - self.position.x;
       float dy = followPlayer.position.y - self.position.y;
       float d = sqrt(dx*dx + dy*dy);
@@ -38,6 +125,11 @@
             float slope = (20 - followPlayer.position.y) / (160 - followPlayer.position.x);
             float posX = sqrt(pow(posDist, 2) / (1 + pow(slope, 2)));
             float posY = slope * posX;
+            //slope is infinite
+            if (followPlayer.position.x == 160){
+               posY = -posDist;
+            }
+            
             CGPoint endpt;
             if (slope > 0){
                endpt = ccpSub(followPlayer.position, ccp(posX, posY));
@@ -45,6 +137,7 @@
             else if (slope < 0){
                endpt = ccpAdd(followPlayer.position, ccp(posX, posY));
             }
+            
             NSMutableArray *bezierArray1 = [NSMutableArray array];
             // Add Beziers
             // Bezier 0
@@ -64,10 +157,15 @@
          }
       }
    }
+   else if (![Singleton sharedSingleron].defenderFollowBool){
+      if ([defenderArray count] > 0){
+         NSLog(@"arraycount: %i", [defenderArray count]);
+         [defenderArray removeAllObjects];
+      }
+   }
 }
 -(id) followPlayer: (WideReceivers*) player{
    followPlayer = player;
    return self;
 }
-
 @end

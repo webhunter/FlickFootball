@@ -10,8 +10,11 @@
 #import "Ball.h"
 
 @interface CopyBall : CCSprite{
+   CCSprite *stickyplayer;
 }
 -(id) initWithFile:(NSString *)filename;
 -(id) fadeAndRemove;
+-(id) setPlayerToStick:(CCSprite*)sender;
+-(CCSprite*)getSticky;
 
 @end

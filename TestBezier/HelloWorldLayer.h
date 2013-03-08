@@ -35,9 +35,6 @@
    CopyBall *copiedBall;
    Defender *defender1;
    Defender *defender2;
-   CCSprite *ballToStick;
-
-   CCSprite *ballCopy;
    NSMutableArray *ballArray;
    NSMutableArray *removeArray;
    NSMutableArray *playerArray;

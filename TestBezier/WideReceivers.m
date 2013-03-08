@@ -35,11 +35,6 @@
 -(id) movePlayerBack{
    [self stopAllActions];
    if (self.playerMoving){
-      NSMutableArray *bezierArray1 = [NSMutableArray array];
-      // Add Beziers
-      // Bezier 0
-      ccBezierConfig bzConfig_0;
-      
       //calculate slope from points
       CGPoint lastPoint = self.position;
       float playerMovementSlope = (self.position.y - holdPoint.y) / (self.position.x - holdPoint.x);
@@ -123,7 +118,10 @@
             
          }
       }
-      
+      NSMutableArray *bezierArray1 = [NSMutableArray array];
+      // Add Beziers
+      // Bezier 0
+      ccBezierConfig bzConfig_0;
       bzConfig_0.controlPoint_1 = self.playerControl;
       bzConfig_0.controlPoint_2 = self.playerStartPos;
       bzConfig_0.endPosition = self.playerStartPos;
