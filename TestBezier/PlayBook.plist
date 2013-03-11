@@ -12,7 +12,7 @@
 		</array>
 		<array>
 			<string>300x20</string>
-			<string>300x200</string>
+			<string>290x200</string>
 			<string>60x400</string>
 			<string>30x200</string>
 		</array>
@@ -27,7 +27,7 @@
 		</array>
 		<array>
 			<string>300x20</string>
-			<string>280x200</string>
+			<string>300x400</string>
 			<string>160x400</string>
 		</array>
 	</array>
@@ -35,9 +35,15 @@
 	<array>
 		<array>
 			<string>20x20</string>
-			<string>20x400</string>
-			<string>240x200</string>
-			<string>300x100</string>
+			<string>20x120</string>
+			<string>60x180</string>
+			<string>20x240</string>
+			<string>300x240</string>
+			<string>200x180</string>
+			<string>250x100</string>
+			<string>250x400</string>
+			<string>200x350</string>
+			<string>100x350</string>
 		</array>
 		<array>
 			<string>300x20</string>

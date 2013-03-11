@@ -150,7 +150,7 @@
       
       CCSprite *topPiece = [CCSprite spriteWithFile:@"TopPiece.png"];
       topPiece.position = ccp(160, 480 - topPiece.boundingBox.size.height/2);
-      [self addChild:topPiece z:10];
+      //[self addChild:topPiece z:10];
       
       playBg = [CCSprite spriteWithFile:@"Backboard.png"];
       playBg.position = ccp(160, 367);
@@ -206,7 +206,8 @@
    NSDictionary *playDictionary = [[NSDictionary alloc] initWithContentsOfFile:playPath];
    
    //select the first play
-   NSArray *playArray = [[playDictionary allValues] objectAtIndex:playNumber - 1];
+   //NSArray *playArray = [[playDictionary allValues] objectAtIndex:playNumber - 1];
+   NSArray *playArray = [playDictionary valueForKey:[NSString stringWithFormat:@"Play %i", playNumber]];
    //coordinates for first player
    NSArray *firstPlay = [playArray objectAtIndex:0];
    NSArray *secondPlay = [playArray objectAtIndex:1];
@@ -279,9 +280,9 @@
    //[defender2 runAction:[CCMoveTo actionWithDuration:1.0f position:ccpAdd(player2startPos, ccp(0, 50))]];
    CGPoint def1 = ccpAdd(player1startPos, ccp(0, 100));
    CGPoint def2 = ccpAdd(player2startPos, ccp(0, 100));
-
-   [defender1 moveBack:def1];
-   [defender2 moveBack:def2];
+   
+   [defender1 moveDefenderBack:def1];
+   [defender2 moveDefenderBack:def2];
 
 }
 #pragma mark Gamelogic
@@ -292,9 +293,12 @@
       WideReceivers *player = (WideReceivers *)[playerArray objectAtIndex:i];
       streak.position = player.position;
    }
-   
+   for (WideReceivers *player in playerLayer.children){
+      [player.playerMovementArray addObject:[NSValue valueWithCGPoint:player.position]];
+   }
    for (Ball *ball in ballLayer.children){
       for (WideReceivers *player in playerLayer.children){
+         
          float diff = ccpDistance(player.position, ball.position);
          if (diff < player.boundingBox.size.width / 2 + ball.boundingBox.size.width / 2){
             [ball stopAllActions];
@@ -400,7 +404,6 @@
       else{
          copiedBall.position = [copiedBall getSticky].position;
       }
-      
    }
 }
 
@@ -689,7 +692,7 @@
    //ccDrawLine(player1Control, p4);
    //ccDrawLine(newP1, newP2);
    //ccDrawLine(newP12, newP22);
-   
+   //showRoutes = YES;
    if (showRoutes){
       for (int i = 1; i < [player1Book count]; i ++){
          ccDrawLine([[player1Book objectAtIndex:i-1] CGPointValue], [[player1Book objectAtIndex:i] CGPointValue]);
@@ -698,8 +701,49 @@
          ccDrawLine([[player2Book objectAtIndex:i-1] CGPointValue], [[player2Book objectAtIndex:i] CGPointValue]);
       }
    }
-   ccDrawCubicBezier([Singleton sharedSingleron].b1, [Singleton sharedSingleron].b2, [Singleton sharedSingleron].b3, [Singleton sharedSingleron].b3,100);
+   
+   
+   ccDrawColor4F(255.0f, 255.0f, 0.0f, 255.0f);
 
+   
+   /*
+   for (WideReceivers *play in playerLayer.children){
+      for (int i = 0; i < [play.playerBeziers count]; i++){
+         if (i%3 == 0){
+                     ccDrawCubicBezier([[play.playerBeziers objectAtIndex:i] CGPointValue], [[play.playerBeziers objectAtIndex:i] CGPointValue], [[play.playerBeziers objectAtIndex:i+1] CGPointValue], [[play.playerBeziers objectAtIndex:i+2] CGPointValue],100);
+         }
+      }
+   }
+   */
+   /*
+   for (Defender *def in defenderLayer.children){
+      for (int i = 1; i < [def.defenderMovementArray count]; i ++){
+         if ([def.defenderMovementArray count] > 2){
+            CGPoint ln1 = [[def.defenderMovementArray objectAtIndex:i] CGPointValue];
+            CGPoint ln2 = [[def.defenderMovementArray objectAtIndex:i-1] CGPointValue];
+            
+            ccDrawLine(ln1, ln2);
+         }
+      }
+   }
+   
+   for (int i = 1; i < [player1.playerMovementArray count]; i ++){
+      if ([player1.playerMovementArray count] > 2){
+         CGPoint ln1 = [[player1.playerMovementArray objectAtIndex:i] CGPointValue];
+         CGPoint ln2 = [[player1.playerMovementArray objectAtIndex:i-1] CGPointValue];
+         
+         ccDrawLine(ln1, ln2);
+      }
+   }
+   for (int i = 1; i < [player2.playerMovementArray count]; i ++){
+      if ([player2.playerMovementArray count] > 2){
+         CGPoint ln1 = [[player2.playerMovementArray objectAtIndex:i] CGPointValue];
+         CGPoint ln2 = [[player2.playerMovementArray objectAtIndex:i-1] CGPointValue];
+         
+         ccDrawLine(ln1, ln2);
+      }
+   }
+   */
    //ccDrawLine(player1Control, player1.position);
    //ccDrawLine(player2Control, player2.position);
    

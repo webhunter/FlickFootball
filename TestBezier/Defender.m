@@ -11,19 +11,20 @@
 
 
 @implementation Defender
-@synthesize defenderArray;
+@synthesize defenderMovementArray;
 
 -(id) initWithFile:(NSString *)filename {
 	if ((self = [super initWithFile:filename])) {
       defenderPlacementBool = NO;
-      defenderArray = [[NSMutableArray alloc] init];
+      self.defenderMovementArray = [[NSMutableArray alloc] init];
+      hold = NO;
       [self schedule:@selector(move:)];
    }
    return self;
 }
--(id) moveBack:(CGPoint) endpt{
-   CGPoint p1 = [[defenderArray objectAtIndex:[defenderArray count]-6] CGPointValue];
-   CGPoint p2 = [[defenderArray objectAtIndex:[defenderArray count]-1] CGPointValue];
+-(id) moveDefenderBack:(CGPoint) endpt{
+   CGPoint p1 = [[self.defenderMovementArray objectAtIndex:[self.defenderMovementArray count]-6] CGPointValue];
+   CGPoint p2 = [[self.defenderMovementArray objectAtIndex:[self.defenderMovementArray count]-1] CGPointValue];
    p2 = self.position;
    
    float defenderMovementSlope = (p2.y - p1.y) / (p2.x - p1.x);
@@ -94,9 +95,6 @@
    CCBezierTo *bezierTo_0 = [CCBezierTo actionWithDuration:3.5f bezier:bzConfig_0];
    [bezierArray1 addObject:bezierTo_0];
    
-   [Singleton sharedSingleron].b1 = self.position;
-   [Singleton sharedSingleron].b2 = playerControl;
-   [Singleton sharedSingleron].b3 = endpt;
    // create actionsequence and run action
    CCSequence *bezierSeq = [CCSequence actionWithArray:bezierArray1];
    
@@ -106,7 +104,7 @@
 }
 -(void) move:(ccTime)dt{
    if ([Singleton sharedSingleron].defenderFollowBool){
-      [defenderArray addObject:[NSValue valueWithCGPoint:self.position]];
+      [self.defenderMovementArray addObject:[NSValue valueWithCGPoint:self.position]];
       
       float dx = followPlayer.position.x - self.position.x;
       float dy = followPlayer.position.y - self.position.y;
@@ -158,11 +156,19 @@
       }
    }
    else if (![Singleton sharedSingleron].defenderFollowBool){
-      if ([defenderArray count] > 0){
-         NSLog(@"arraycount: %i", [defenderArray count]);
-         [defenderArray removeAllObjects];
+      [self.defenderMovementArray addObject:[NSValue valueWithCGPoint:self.position]];
+      
+      if ([self.defenderMovementArray count] > 0 && !hold){
+         [self performSelector:@selector(removeArray:) withObject:nil afterDelay:3.5f];
+         NSLog(@"arraycount: %i", [self.defenderMovementArray count]);
+         //[defenderArray removeAllObjects];
+         hold = YES;
       }
    }
+}
+-(void) removeArray:(id)sender{
+   [self.defenderMovementArray removeAllObjects];
+   hold = NO;
 }
 -(id) followPlayer: (WideReceivers*) player{
    followPlayer = player;

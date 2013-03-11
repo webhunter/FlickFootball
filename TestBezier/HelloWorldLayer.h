@@ -80,7 +80,8 @@
    CCSprite *playBg1;
    CCLayer *menuLayer;
    bool menuShowing;
-   bool menuAdjust;   
+   bool menuAdjust;
+   
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child

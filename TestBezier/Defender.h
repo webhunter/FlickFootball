@@ -12,14 +12,14 @@
    int playerNumber;
    bool defenderPlacementBool;
    WideReceivers *followPlayer;
-   NSMutableArray *defenderArray;
-   
+   NSMutableArray *defenderMovementArray;
+   bool hold;
 }
 
 -(id) initWithFile:(NSString *)filename;
 -(id) followPlayer: (WideReceivers*) player;
--(id) moveBack:(CGPoint) endpt;
+-(id) moveDefenderBack:(CGPoint) endpt;
 
 @property (readwrite) bool followPlayerBool;
-@property (nonatomic, retain)NSMutableArray *defenderArray;
+@property (nonatomic, retain)NSMutableArray *defenderMovementArray;
 @end

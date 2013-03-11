@@ -7,15 +7,19 @@
 //
 
 #import "CCSprite.h"
+#import "cocos2d.h"
 
 @interface WideReceivers : CCSprite{
    bool playerBottomtoTop;
    bool playerLefttoRight;
    bool playerMoving;
    float playerSlope;
-   CGPoint playerControl;
    CGPoint holdPoint;
    CGPoint playerStartPos;
+   NSMutableArray *playerMovementArray;
+   
+   NSMutableArray *playerBeziers;
+
 }
 
 -(id) initWithFile:(NSString *)filename;
@@ -28,8 +32,9 @@
 @property (nonatomic, readwrite) bool playerLefttoRight;
 @property (nonatomic, readwrite) bool playerMoving;
 @property (nonatomic, readwrite) float playerSlope;
-@property (nonatomic, readwrite) CGPoint playerControl;
 @property (nonatomic, readwrite) CGPoint holdPoint;
 @property (nonatomic, readwrite) CGPoint playerStartPos;
+@property (nonatomic, retain)NSMutableArray *playerMovementArray;
+@property (nonatomic, retain)NSMutableArray *playerBeziers;
 
 @end

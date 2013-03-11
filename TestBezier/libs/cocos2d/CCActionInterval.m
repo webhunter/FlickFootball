@@ -821,10 +821,7 @@
 //   (1 - t)3 + 3t(1-t)2 + 3t2(1 - t) + t3 = 1
 static inline CGFloat bezierat( float a, float b, float c, float d, ccTime t )
 {
-	return (powf(1-t,3) * a +
-			3*t*(powf(1-t,2))*b +
-			3*powf(t,2)*(1-t)*c +
-			powf(t,3)*d );
+	return (powf(1-t,3) * a + 3*t*(powf(1-t,2))*b + 3*powf(t,2)*(1-t)*c +powf(t,3)*d );
 }
 
 //
@@ -839,7 +836,8 @@ static inline CGFloat bezierat( float a, float b, float c, float d, ccTime t )
 -(id) initWithDuration: (ccTime) t bezier:(ccBezierConfig) c
 {
 	if( (self=[super initWithDuration: t]) ) {
-		config_ = c;
+
+      config_ = c;
 	}
 	return self;
 }
@@ -854,6 +852,7 @@ static inline CGFloat bezierat( float a, float b, float c, float d, ccTime t )
 {
 	[super startWithTarget:aTarget];
 	startPosition_ = [(CCNode*)target_ position];
+   //[self findDist];
 }
 
 -(void) update: (ccTime) t
@@ -870,6 +869,8 @@ static inline CGFloat bezierat( float a, float b, float c, float d, ccTime t )
 
 	CGFloat x = bezierat(xa, xb, xc, xd, t);
 	CGFloat y = bezierat(ya, yb, yc, yd, t);
+   
+
 	[target_ setPosition:  ccpAdd( startPosition_, ccp(x,y))];
 }
 
@@ -894,6 +895,7 @@ static inline CGFloat bezierat( float a, float b, float c, float d, ccTime t )
 -(void) startWithTarget:(id)aTarget
 {
 	[super startWithTarget:aTarget];
+
 	config_.controlPoint_1 = ccpSub(config_.controlPoint_1, startPosition_);
 	config_.controlPoint_2 = ccpSub(config_.controlPoint_2, startPosition_);
 	config_.endPosition = ccpSub(config_.endPosition, startPosition_);
