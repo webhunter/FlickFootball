@@ -137,6 +137,8 @@
       menuShowing = YES;
       menuTouch = NO;
       menuAdjust = NO;
+      
+      
       [Singleton sharedSingleron].playersHaveReturned = YES;
       [Singleton sharedSingleron].ballToPlayer = NO;
       
@@ -244,6 +246,9 @@
 }
 
 -(void) moveBack:(NSString*)string{
+   [Singleton sharedSingleron].runParametric = NO;
+   
+   
    [player1 movePlayerBack];
    [player2 movePlayerBack];
 }
@@ -283,7 +288,7 @@
    
    [defender1 moveDefenderBack:def1];
    [defender2 moveDefenderBack:def2];
-
+   
 }
 #pragma mark Gamelogic
 - (void)tick:(ccTime) dt {
@@ -302,12 +307,10 @@
          float diff = ccpDistance(player.position, ball.position);
          if (diff < player.boundingBox.size.width / 2 + ball.boundingBox.size.width / 2){
             [ball stopAllActions];
-            NSLog(@"diff: %f", diff);
             
             if (copiedBall == nil){
-               copiedBall = [CopyBall spriteWithFile:@"Player2.png"];
+               copiedBall = [CopyBall spriteWithFile:@"Player3.png"];
                copiedBall.position = ball.position;
-               copiedBall.color = ccRED;
                [self addChild:copiedBall z:20];
                [copiedBall setPlayerToStick: player];
                [copiedBall fadeAndRemove];
@@ -322,6 +325,7 @@
             [player1 setHoldPosition: player1.position];
             [player2 setHoldPosition: player2.position];
             
+            
             [Singleton sharedSingleron].defenderFollowBool = NO;
             
             float playDist = ball.position.y - qb.position.y;
@@ -332,18 +336,15 @@
       
       for (Defender *defender in defenderLayer.children){
          float diff = ccpDistance(defender.position, ball.position);
-         if (diff < defender.boundingBox.size.width / 2 + ball.boundingBox.size.width / 2){
-            NSLog(@"diff: %f", diff);
-            
+         if (diff < defender.boundingBox.size.width / 2 + ball.boundingBox.size.width / 2){            
             [ball stopAllActions];
             
             [removeArray addObject:ball];
             [ballArray removeObject:ball];
             
             if (copiedBall == nil){
-               copiedBall = [CopyBall spriteWithFile:@"Player2.png"];
+               copiedBall = [CopyBall spriteWithFile:@"Player3.png"];
                copiedBall.position = ball.position;
-               copiedBall.color = ccRED;
                [self addChild:copiedBall z:20];
                [copiedBall setPlayerToStick: defender];
                [copiedBall fadeAndRemove];
@@ -356,9 +357,8 @@
             
             [Singleton sharedSingleron].defenderFollowBool = NO;
             
-            [self moveDefenderBack];
-            [self playOverWithDelay:0.75f withDistance: 0];
-            
+            [self moveDefenderBack];            
+            [self playOverWithDelay:0.75f withDistance: 0];            
          }
       }
       if (ball.position.y >= 480 || ball.position.x <= -60 || ball.position.x >= 380){
@@ -373,7 +373,6 @@
          
          [self moveDefenderBack];
          [self playOverWithDelay:0.75f withDistance: 0];
-         
       }
    }
    
@@ -382,8 +381,8 @@
          tile.position = ccp(160, tile.position.y + 616);
          tile = [CCSprite spriteWithFile:[self tileImageName: tile]];
       }
-      
    }
+   
    for (int i = 0; i < [removeArray count]; i++) {
       [ballLayer removeChild:(CCSprite *)[removeArray objectAtIndex:i] cleanup:YES];
    }
@@ -396,13 +395,14 @@
       float dx = [copiedBall getSticky].position.x - copiedBall.position.x;
       float dy = [copiedBall getSticky].position.y - copiedBall.position.y;
       float d = sqrt(dx*dx + dy*dy);
-      float v = 200;
+      float v = 300;
       
-      if (d > 3){
+      if (d > 2){
          copiedBall.position = ccpAdd(copiedBall.position, ccp(dx/d * v * dt, dy/d * v *dt));
       }
       else{
-         copiedBall.position = [copiedBall getSticky].position;
+         [[copiedBall getSticky] setTexture:[[CCTextureCache sharedTextureCache] addImage:@"Player3.png"]];
+         [self removeChild:copiedBall cleanup:YES];
       }
    }
 }
@@ -490,9 +490,8 @@
 }
 -(void)throwBallWithTime:(int)time{
    if ([ballArray count] < 1){
-      Ball *ball = [Ball spriteWithFile:@"Player2.png"];
+      Ball *ball = [Ball spriteWithFile:@"Player3.png"];
       ball.position = qb.position;
-      ball.color = ccRED;
       [ballLayer addChild:ball];
       [ballArray addObject:ball];
       
@@ -601,7 +600,6 @@
             [self calculatePoints];
             [self throwBallWithTime: timeSwiped];
             [Singleton sharedSingleron].playersHaveReturned = NO;
-            
          }
       }
       
@@ -642,6 +640,7 @@
          [player2 playerStreak: player2Book];
          [Singleton sharedSingleron].defenderFollowBool = YES;
          [Singleton sharedSingleron].playersHaveReturned = YES;
+         [Singleton sharedSingleron].runParametric = YES;
       }
       //if the touch contains the menu
       else if (CGRectContainsPoint(playMaker.boundingBox, touchLocation)){
@@ -701,49 +700,53 @@
          ccDrawLine([[player2Book objectAtIndex:i-1] CGPointValue], [[player2Book objectAtIndex:i] CGPointValue]);
       }
    }
-   
-   
+   for (int i = 1; i < [player1Book count]; i ++){
+      ccDrawLine([[player1Book objectAtIndex:i-1] CGPointValue], [[player1Book objectAtIndex:i] CGPointValue]);
+   }
+   for (int i = 1; i < [player2Book count]; i ++){
+      ccDrawLine([[player2Book objectAtIndex:i-1] CGPointValue], [[player2Book objectAtIndex:i] CGPointValue]);
+   }
    ccDrawColor4F(255.0f, 255.0f, 0.0f, 255.0f);
-
    
-   /*
+   
+   
    for (WideReceivers *play in playerLayer.children){
       for (int i = 0; i < [play.playerBeziers count]; i++){
          if (i%3 == 0){
-                     ccDrawCubicBezier([[play.playerBeziers objectAtIndex:i] CGPointValue], [[play.playerBeziers objectAtIndex:i] CGPointValue], [[play.playerBeziers objectAtIndex:i+1] CGPointValue], [[play.playerBeziers objectAtIndex:i+2] CGPointValue],100);
-         }
-      }
-   }
-   */
-   /*
-   for (Defender *def in defenderLayer.children){
-      for (int i = 1; i < [def.defenderMovementArray count]; i ++){
-         if ([def.defenderMovementArray count] > 2){
-            CGPoint ln1 = [[def.defenderMovementArray objectAtIndex:i] CGPointValue];
-            CGPoint ln2 = [[def.defenderMovementArray objectAtIndex:i-1] CGPointValue];
-            
-            ccDrawLine(ln1, ln2);
+            ccDrawCubicBezier([[play.playerBeziers objectAtIndex:i] CGPointValue], [[play.playerBeziers objectAtIndex:i] CGPointValue], [[play.playerBeziers objectAtIndex:i+1] CGPointValue], [[play.playerBeziers objectAtIndex:i+2] CGPointValue],100);
          }
       }
    }
    
-   for (int i = 1; i < [player1.playerMovementArray count]; i ++){
-      if ([player1.playerMovementArray count] > 2){
-         CGPoint ln1 = [[player1.playerMovementArray objectAtIndex:i] CGPointValue];
-         CGPoint ln2 = [[player1.playerMovementArray objectAtIndex:i-1] CGPointValue];
-         
-         ccDrawLine(ln1, ln2);
-      }
-   }
-   for (int i = 1; i < [player2.playerMovementArray count]; i ++){
-      if ([player2.playerMovementArray count] > 2){
-         CGPoint ln1 = [[player2.playerMovementArray objectAtIndex:i] CGPointValue];
-         CGPoint ln2 = [[player2.playerMovementArray objectAtIndex:i-1] CGPointValue];
-         
-         ccDrawLine(ln1, ln2);
-      }
-   }
-   */
+   /*
+    for (Defender *def in defenderLayer.children){
+    for (int i = 1; i < [def.defenderMovementArray count]; i ++){
+    if ([def.defenderMovementArray count] > 2){
+    CGPoint ln1 = [[def.defenderMovementArray objectAtIndex:i] CGPointValue];
+    CGPoint ln2 = [[def.defenderMovementArray objectAtIndex:i-1] CGPointValue];
+    
+    ccDrawLine(ln1, ln2);
+    }
+    }
+    }
+    
+    for (int i = 1; i < [player1.playerMovementArray count]; i ++){
+    if ([player1.playerMovementArray count] > 2){
+    CGPoint ln1 = [[player1.playerMovementArray objectAtIndex:i] CGPointValue];
+    CGPoint ln2 = [[player1.playerMovementArray objectAtIndex:i-1] CGPointValue];
+    
+    ccDrawLine(ln1, ln2);
+    }
+    }
+    for (int i = 1; i < [player2.playerMovementArray count]; i ++){
+    if ([player2.playerMovementArray count] > 2){
+    CGPoint ln1 = [[player2.playerMovementArray objectAtIndex:i] CGPointValue];
+    CGPoint ln2 = [[player2.playerMovementArray objectAtIndex:i-1] CGPointValue];
+    
+    ccDrawLine(ln1, ln2);
+    }
+    }
+    */
    //ccDrawLine(player1Control, player1.position);
    //ccDrawLine(player2Control, player2.position);
    
@@ -754,7 +757,6 @@
 	// in case you have something to dealloc, do it in this method
 	// in this particular example nothing needs to be released.
 	// cocos2d will automatically release all the children (Label)
-	
 	// don't forget to call "super dealloc"
 	[super dealloc];
 }

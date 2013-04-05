@@ -23,7 +23,7 @@
    return self;
 }
 -(id) moveDefenderBack:(CGPoint) endpt{
-   CGPoint p1 = [[self.defenderMovementArray objectAtIndex:[self.defenderMovementArray count]-6] CGPointValue];
+   CGPoint p1 = [[self.defenderMovementArray objectAtIndex:[self.defenderMovementArray count]-3] CGPointValue];
    CGPoint p2 = [[self.defenderMovementArray objectAtIndex:[self.defenderMovementArray count]-1] CGPointValue];
    p2 = self.position;
    
@@ -161,7 +161,6 @@
       if ([self.defenderMovementArray count] > 0 && !hold){
          [self performSelector:@selector(removeArray:) withObject:nil afterDelay:3.5f];
          NSLog(@"arraycount: %i", [self.defenderMovementArray count]);
-         //[defenderArray removeAllObjects];
          hold = YES;
       }
    }

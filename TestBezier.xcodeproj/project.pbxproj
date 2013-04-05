@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		420364EA170E9CDC001863D5 /* Player3-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 420364E8170E9CDC001863D5 /* Player3-hd.png */; };
+		420364EB170E9CDC001863D5 /* Player3.png in Resources */ = {isa = PBXBuildFile; fileRef = 420364E9170E9CDC001863D5 /* Player3.png */; };
 		427A695D16E72A95001410C3 /* CopyBall.m in Sources */ = {isa = PBXBuildFile; fileRef = 427A695C16E72A95001410C3 /* CopyBall.m */; };
 		427CF30716D9D1FC00A6B65B /* SlidingMenuGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 427CF30516D9CE5900A6B65B /* SlidingMenuGrid.m */; };
 		427CF30B16D9D23E00A6B65B /* box.png in Resources */ = {isa = PBXBuildFile; fileRef = 427CF30916D9D23E00A6B65B /* box.png */; };
@@ -187,6 +189,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		420364E8170E9CDC001863D5 /* Player3-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Player3-hd.png"; sourceTree = "<group>"; };
+		420364E9170E9CDC001863D5 /* Player3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Player3.png; sourceTree = "<group>"; };
 		427A695B16E72A95001410C3 /* CopyBall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CopyBall.h; sourceTree = "<group>"; };
 		427A695C16E72A95001410C3 /* CopyBall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CopyBall.m; sourceTree = "<group>"; };
 		427CF30516D9CE5900A6B65B /* SlidingMenuGrid.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SlidingMenuGrid.m; sourceTree = "<group>"; };
@@ -619,6 +623,8 @@
 		42DFD39716B0F09400D0BBAB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				420364E8170E9CDC001863D5 /* Player3-hd.png */,
+				420364E9170E9CDC001863D5 /* Player3.png */,
 				427CF33816DC3A0200A6B65B /* Backboard2.png */,
 				427CF33916DC3A0200A6B65B /* Backboard2-hd.png */,
 				427CF33416DC39CD00A6B65B /* Backboard.png */,
@@ -1113,6 +1119,8 @@
 				427CF33716DC39CD00A6B65B /* Backboard-hd.png in Resources */,
 				427CF33A16DC3A0200A6B65B /* Backboard2.png in Resources */,
 				427CF33B16DC3A0200A6B65B /* Backboard2-hd.png in Resources */,
+				420364EA170E9CDC001863D5 /* Player3-hd.png in Resources */,
+				420364EB170E9CDC001863D5 /* Player3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

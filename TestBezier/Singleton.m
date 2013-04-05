@@ -13,6 +13,8 @@
 @synthesize defenderFollowBool = _defenderFollowBool;
 @synthesize playersHaveReturned = _playersHaveReturned;
 @synthesize ballToPlayer = _ballToPlayer;
+@synthesize runParametric = _runParametric;
+
 @synthesize b1 = _b1;
 @synthesize b2 = _b2;
 @synthesize b3 = _b3;
